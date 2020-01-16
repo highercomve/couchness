@@ -12,7 +12,7 @@ func Download() *cli.Command {
 		Name:        "download",
 		Aliases:     []string{"d"},
 		ArgsUsage:   "showID",
-		Usage:       "",
+		Usage:       "download SHOW_ID",
 		HelpName:    "",
 		Description: "Download show by ID",
 		Flags:       []cli.Flag{},

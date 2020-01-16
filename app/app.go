@@ -7,4 +7,5 @@ var Commands []*cli.Command = []*cli.Command{
 	Add(),
 	Scan(),
 	Download(),
+	UpdateAll(),
 }
