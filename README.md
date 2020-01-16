@@ -3,12 +3,14 @@ Couchness is a simple CLI tools to update your shows
 
 ## Install 
 
-** Latest Release **
+**Latest Release**
+
 ```bash
 wget https://raw.githubusercontent.com/highercomve/couchness/master/install.sh
 bash install.sh 
 ```
-** Specific version **
+
+**Specific version**
 
 ```bash
 wget https://raw.githubusercontent.com/highercomve/couchness/master/install.sh
