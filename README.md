@@ -6,13 +6,13 @@ Couchness is a simple CLI tools to update your shows
 ** Latest Release **
 ```bash
 wget https://raw.githubusercontent.com/highercomve/couchness/master/install.sh
-./install.sh 
+bash install.sh 
 ```
 ** Specific version **
 
 ```bash
 wget https://raw.githubusercontent.com/highercomve/couchness/master/install.sh
-./install.sh v0.0.1
+bash install.sh v0.0.1
 ```
 couchness - couchness is an automatic tool to follow and download show using RSS or eztv
 
