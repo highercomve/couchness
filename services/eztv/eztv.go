@@ -102,6 +102,7 @@ func (s Service) GetShowData(show *models.Show, page, limit int) (*models.Show, 
 		torrentInfo.Downloaded = false
 		torrentInfo.Extension = filepath.Ext(torrent.Filename)
 		torrentInfo.Location = filepath.Join(show.Directory, torrent.Filename)
+		torrentInfo.Seeds = torrent.Seeds
 		size, err := strconv.ParseInt(torrent.Size, 10, 64)
 		if err == nil {
 			torrentInfo.Size = size

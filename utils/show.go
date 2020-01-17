@@ -84,3 +84,27 @@ func GetMinimunSizeFromList(episodes models.Episodes) models.Episodes {
 	})
 	return newEpisodes
 }
+
+//GetMaxSeedsFromList get maximun amount of seeds episodes from a list
+func GetMaxSeedsFromList(episodes models.Episodes) models.Episodes {
+	episodesMap := make(map[int]*models.TorrentInfo, 0)
+	for _, e := range episodes {
+		sen := GetSEN(e.Season, e.Episode)
+		lastE, found := episodesMap[sen]
+		if found && e.Seeds < lastE.Seeds {
+			continue
+		}
+		episodesMap[sen] = e
+	}
+	newEpisodes := make(models.Episodes, 0)
+	for _, e := range episodesMap {
+		newEpisodes = append(newEpisodes, e)
+	}
+	sort.SliceStable(newEpisodes, func(i, j int) bool {
+		se1 := GetSEN(newEpisodes[i].Season, newEpisodes[i].Episode)
+		se2 := GetSEN(newEpisodes[j].Season, newEpisodes[j].Episode)
+
+		return se1 > se2
+	})
+	return newEpisodes
+}

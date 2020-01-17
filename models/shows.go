@@ -38,6 +38,7 @@ type ShowConf struct {
 	Quality    string `json:"quality"`
 	Codec      string `json:"codec"`
 	Resolution string `json:"resolution"`
+	FilterBy   string `json:"filter-by"`
 }
 
 // ShowsMap show torrent information

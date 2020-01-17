@@ -29,4 +29,5 @@ type TorrentInfo struct {
 	Location   string `json:"location"`
 	MagnetURL  string `json:"magnet_url,omitempty"`
 	Downloaded bool   `json:"downloaded,omitempty"`
+	Seeds      int    `json:"seeds,omitempty"`
 }

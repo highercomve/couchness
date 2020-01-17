@@ -73,7 +73,7 @@ func downloadSince(show *models.Show) ([]*transmission.Torrent, error) {
 	}
 
 	downloadedEpisodes := utils.GetEpisodeVersionSince(show.Episodes, show.Configuration.Since, "", "", "")
-	eztvEpisodes := utils.GetMinimunSizeFromList(utils.GetEpisodeVersionSince(
+	eztvEpisodes := utils.GetMaxSeedsFromList(utils.GetEpisodeVersionSince(
 		allEpisodes,
 		show.Configuration.Since,
 		show.Configuration.Codec,
