@@ -46,16 +46,16 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: couchness_osx
-          path: build/linux_darwin_amd64/couchness
+          path: build/darwin_amd64/couchness
       
       - name: Upload Windows 64 bit
         uses: actions/upload-artifact@v1
         with:
           name: couchness_windows_amd64
-          path: build/linux_windows_amd64/couchness
+          path: build/windows_amd64/couchness
 
       - name: Upload Windows 32 bit
         uses: actions/upload-artifact@v1
         with:
           name: couchness_windows_386
-          path: build/linux_windows_386/couchness
+          path: build/windows_386/couchness
