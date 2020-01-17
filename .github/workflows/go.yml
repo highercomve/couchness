@@ -1,6 +1,9 @@
 # .github/workflows/go.yaml
 
-on: [release]
+on: 
+  push:
+    tags:
+      - 'v*.*.*'
 name: Build
 jobs:
   build:
