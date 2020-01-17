@@ -25,6 +25,7 @@ type Show struct {
 	Title         string `json:"title"`
 	ExternalID    string `json:"external-id"`
 	Directory     string `json:"directory"`
+	TorrentCount  int    `json:"torrents_count"`
 	Configuration *ShowConf
 	Episodes      Episodes
 }

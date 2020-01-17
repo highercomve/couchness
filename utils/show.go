@@ -10,15 +10,15 @@ import (
 func GetEpisodesMap(episodes models.Episodes) map[int]*models.TorrentInfo {
 	episodesMap := make(map[int]*models.TorrentInfo, 0)
 	for _, e := range episodes {
-		sen := GetSEN(e)
+		sen := GetSEN(e.Season, e.Episode)
 		episodesMap[sen] = e
 	}
 	return episodesMap
 }
 
 // GetSEN get sen, SEN is and ID made by the season and the episode
-func GetSEN(e *models.TorrentInfo) int {
-	return (e.Season * 100) + e.Episode
+func GetSEN(season, episode int) int {
+	return (season * 100) + episode
 }
 
 // GetEpisodeVersion Get list of episodes filtering by season, episode, codec, resolution and quality

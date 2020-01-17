@@ -91,9 +91,7 @@ func (s Service) GetShowData(show *models.Show, page, limit int) (*models.Show, 
 	if eztvShow == nil {
 		return nil, errors.New("Imbb show ID as an error " + show.ExternalID)
 	}
-
-	show.Episodes = []*models.TorrentInfo{}
-
+	show.TorrentCount = eztvShow.TorrentCount
 	for _, torrent := range eztvShow.Torrents {
 		torrentInfo, err := utils.ParseTorrent(torrent.Filename)
 		if err != nil {

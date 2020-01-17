@@ -65,28 +65,50 @@ func DownloadShow(show *models.Show) error {
 }
 
 func downloadSince(show *models.Show) ([]*transmission.Torrent, error) {
-	var s models.Show = *show
-	s.Episodes = []*models.TorrentInfo{}
 	service := FollowServices[show.Configuration.Service]
+	sinceNotComplete := true
 
-	newShow, err := service.GetShowData(&s, 1, 200)
-	if err != nil {
-		return nil, err
+	begginingOfShow := 101
+	page := 1
+	limit := 100
+	allEpisodes := []*models.TorrentInfo{}
+	for sinceNotComplete {
+		var s = &models.Show{
+			ID:         show.ID,
+			ExternalID: show.ExternalID,
+			Episodes:   []*models.TorrentInfo{},
+		}
+		s, err := service.GetShowData(s, page, limit)
+		if err != nil {
+			return nil, err
+		}
+
+		pages := utils.DivCeil(s.TorrentCount, limit)
+		lastElement := len(s.Episodes) - 1
+		minimalSEN := utils.GetSEN(show.Configuration.Since, 0)
+		lastEpisodeSEN := utils.GetSEN(s.Episodes[lastElement].Season, s.Episodes[lastElement].Episode)
+		if page < pages && minimalSEN < lastEpisodeSEN && lastEpisodeSEN != begginingOfShow {
+			page++
+		} else {
+			sinceNotComplete = false
+		}
+
+		allEpisodes = append(allEpisodes, s.Episodes...)
 	}
 
-	downloadedEpisodes := utils.GetEpisodeVersionSince(show.Episodes, s.Configuration.Since, "", "", "")
+	downloadedEpisodes := utils.GetEpisodeVersionSince(show.Episodes, show.Configuration.Since, "", "", "")
 	eztvEpisodes := utils.GetEpisodeVersionSince(
-		newShow.Episodes,
-		s.Configuration.Since,
-		newShow.Configuration.Codec,
-		newShow.Configuration.Resolution,
-		newShow.Configuration.Quality,
+		allEpisodes,
+		show.Configuration.Since,
+		show.Configuration.Codec,
+		show.Configuration.Resolution,
+		show.Configuration.Quality,
 	)
 
 	deMap := utils.GetEpisodesMap(downloadedEpisodes)
 	missingEpisodes := make([]*transmission.Torrent, 0)
 	for _, e := range eztvEpisodes {
-		sen := utils.GetSEN(e)
+		sen := utils.GetSEN(e.Season, e.Episode)
 		_, found := deMap[sen]
 		if !found {
 			fmt.Printf("Downloading Season %d Episode %d \n", e.Season, e.Episode)
