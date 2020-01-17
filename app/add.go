@@ -31,7 +31,7 @@ func Add() *cli.Command {
 				Name:     "resolution",
 				Aliases:  []string{"r"},
 				Usage:    "Resolution of the torrent",
-				Required: true,
+				Required: false,
 			},
 			&cli.StringFlag{
 				Name:     "codec",
