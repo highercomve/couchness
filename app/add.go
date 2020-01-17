@@ -42,7 +42,7 @@ func Add() *cli.Command {
 			&cli.StringFlag{
 				Name:     "quality",
 				Aliases:  []string{"q"},
-				Usage:    "Queality of the torrent",
+				Usage:    "Quality of the torrent",
 				Required: false,
 			},
 			&cli.StringFlag{

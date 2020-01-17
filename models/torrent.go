@@ -22,7 +22,7 @@ type TorrentInfo struct {
 	Language   string `json:"language,omitempty"`
 	Sbs        string `json:"sbs,omitempty"`
 	Unrated    bool   `json:"unrated,omitempty"`
-	Size       string `json:"size,omitempty"`
+	Size       int64  `json:"size,omitempty"`
 	ThreeD     bool   `json:"3d,omitempty"`
 	Name       string `json:"name"`
 	Extension  string `json:"extension"`

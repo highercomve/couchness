@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"fmt"
+	"os"
+	"sort"
 	"strings"
 
 	"github.com/highercomve/couchness/models"
@@ -45,10 +48,39 @@ func GetEpisodeVersionSince(episodes models.Episodes, sN int, c, r, q string) mo
 		eR := strings.ToLower(e.Resolution)
 		eQ := strings.ToLower(e.Quality)
 
+		if os.Getenv("DEBUG") != "" {
+			fmt.Printf("Minimun S=%d c=%s,r=%s,q=%s. \n", sN, c, r, q)
+			fmt.Printf("Compared with S%dE%d c=%s,r=%s,q=%s.\n", e.Season, e.Episode, eC, eR, eQ)
+		}
+
 		if e.Season >= sN && (c == "" || eC == c) && (r == "" || eR == r) && (q == "" || eQ == q) {
 			eps = append(eps, e)
 		}
 	}
 
 	return eps
+}
+
+//GetMinimunSizeFromList get minimum size episodes from a list
+func GetMinimunSizeFromList(episodes models.Episodes) models.Episodes {
+	episodesMap := make(map[int]*models.TorrentInfo, 0)
+	for _, e := range episodes {
+		sen := GetSEN(e.Season, e.Episode)
+		lastE, found := episodesMap[sen]
+		if found && e.Size > lastE.Size {
+			continue
+		}
+		episodesMap[sen] = e
+	}
+	newEpisodes := make(models.Episodes, 0)
+	for _, e := range episodesMap {
+		newEpisodes = append(newEpisodes, e)
+	}
+	sort.SliceStable(newEpisodes, func(i, j int) bool {
+		se1 := GetSEN(newEpisodes[i].Season, newEpisodes[i].Episode)
+		se2 := GetSEN(newEpisodes[j].Season, newEpisodes[j].Episode)
+
+		return se1 > se2
+	})
+	return newEpisodes
 }

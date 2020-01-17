@@ -66,44 +66,20 @@ func DownloadShow(show *models.Show) error {
 
 func downloadSince(show *models.Show) ([]*transmission.Torrent, error) {
 	service := FollowServices[show.Configuration.Service]
-	sinceNotComplete := true
 
-	begginingOfShow := 101
-	page := 1
-	limit := 100
-	allEpisodes := []*models.TorrentInfo{}
-	for sinceNotComplete {
-		var s = &models.Show{
-			ID:         show.ID,
-			ExternalID: show.ExternalID,
-			Episodes:   []*models.TorrentInfo{},
-		}
-		s, err := service.GetShowData(s, page, limit)
-		if err != nil {
-			return nil, err
-		}
-
-		pages := utils.DivCeil(s.TorrentCount, limit)
-		lastElement := len(s.Episodes) - 1
-		minimalSEN := utils.GetSEN(show.Configuration.Since, 0)
-		lastEpisodeSEN := utils.GetSEN(s.Episodes[lastElement].Season, s.Episodes[lastElement].Episode)
-		if page < pages && minimalSEN < lastEpisodeSEN && lastEpisodeSEN != begginingOfShow {
-			page++
-		} else {
-			sinceNotComplete = false
-		}
-
-		allEpisodes = append(allEpisodes, s.Episodes...)
+	allEpisodes, err := getTorrentsSince(show, service)
+	if err != nil {
+		return nil, err
 	}
 
 	downloadedEpisodes := utils.GetEpisodeVersionSince(show.Episodes, show.Configuration.Since, "", "", "")
-	eztvEpisodes := utils.GetEpisodeVersionSince(
+	eztvEpisodes := utils.GetMinimunSizeFromList(utils.GetEpisodeVersionSince(
 		allEpisodes,
 		show.Configuration.Since,
 		show.Configuration.Codec,
 		show.Configuration.Resolution,
 		show.Configuration.Quality,
-	)
+	))
 
 	deMap := utils.GetEpisodesMap(downloadedEpisodes)
 	missingEpisodes := make([]*transmission.Torrent, 0)
@@ -157,4 +133,37 @@ func DownloadLatest(show *models.Show) (*transmission.Torrent, error) {
 	}
 
 	return nil, errors.New("The latest version is already downladed")
+}
+
+func getTorrentsSince(show *models.Show, service models.FollowService) (models.Episodes, error) {
+	sinceNotComplete := true
+	begginingOfShowSEN := 101
+	minimalSEN := utils.GetSEN(show.Configuration.Since, 1)
+	page := 1
+	limit := 100
+	allEpisodes := []*models.TorrentInfo{}
+	for sinceNotComplete {
+		s := &models.Show{
+			ID:         show.ID,
+			ExternalID: show.ExternalID,
+			Episodes:   []*models.TorrentInfo{},
+		}
+		s, err := service.GetShowData(s, page, limit)
+		if err != nil {
+			return nil, err
+		}
+
+		pages := utils.DivCeil(s.TorrentCount, limit)
+		lastElement := len(s.Episodes) - 1
+		lastEpisodeSEN := utils.GetSEN(s.Episodes[lastElement].Season, s.Episodes[lastElement].Episode)
+		if page < pages && lastEpisodeSEN > minimalSEN && lastEpisodeSEN != begginingOfShowSEN {
+			page++
+		} else {
+			sinceNotComplete = false
+		}
+
+		allEpisodes = append(allEpisodes, s.Episodes...)
+	}
+
+	return allEpisodes, nil
 }
