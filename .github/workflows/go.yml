@@ -1,6 +1,6 @@
-# .github/workflows/release.yaml
+# .github/workflows/go.yaml
 
-on: release
+on: [push]
 name: Build
 jobs:
   release-linux-386:
