@@ -153,6 +153,11 @@ func getTorrentsSince(show *models.Show, service models.FollowService) (models.E
 			return nil, err
 		}
 
+                if len(s.Episodes) == 0 {
+                        sinceNotComplete = false
+                        continue
+                }
+
 		pages := utils.DivCeil(s.TorrentCount, limit)
 		lastElement := len(s.Episodes) - 1
 		lastEpisodeSEN := utils.GetSEN(s.Episodes[lastElement].Season, s.Episodes[lastElement].Episode)
