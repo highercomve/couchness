@@ -4,8 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/highercomve/couchness/models"
-	"github.com/highercomve/couchness/storage"
+	"github.com/highercomve/couchness/common"
 	"github.com/urfave/cli/v2"
 )
 
@@ -21,36 +20,15 @@ func Shows() *cli.Command {
 			args := c.Args()
 			showID := args.Get(0)
 
-			if showID == "" {
-				shows, err := storage.GetAllShows()
-				if err != nil {
-					return cli.NewExitError(err.Error(), 0)
-				}
-				for _, s := range shows {
-					countEpisodes(s)
-					shows = append(shows, s)
-				}
-				showsJSON, _ := json.MarshalIndent(shows, "", "  ")
-				fmt.Printf("%s \n", showsJSON)
-
-				return nil
-			}
-
-			show := &models.Show{}
-			err := storage.Db.Driver.Read(storage.Db.Collections.Shows, showID, show)
+			shows, err := common.GetShow(showID)
 			if err != nil {
 				return cli.NewExitError(err.Error(), 0)
 			}
 
-			showJSON, _ := json.MarshalIndent(show, "", "  ")
+			showJSON, _ := json.MarshalIndent(shows, "", "  ")
 			fmt.Printf("%s \n", showJSON)
 
 			return nil
 		},
 	}
-}
-
-func countEpisodes(s *models.Show) {
-	s.EpisodesCount = len(s.Episodes)
-	s.Episodes = make(models.Episodes, 0)
 }
