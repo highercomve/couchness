@@ -9,11 +9,16 @@ The first time you run any command will create a configuration file on
 
 The first run you can pass environment variables to set in that configuration file.
 
+```
 COUCHNESS_MEDIA_DIR
 COUCHNESS_OMDB_API_KEY
 COUCHNESS_TRANSMISSION_AUTH (default: transmission:transmission)
 COUCHNESS_TRANSMISSION_HOST (default: localhost)
 COUCHNESS_TRANSMISSION_PORT (default: 9091)
+```
+Here you can get you OMDB API key
+
+www.omdbapi.com/apikey.aspx
 
 ## Install 
 
