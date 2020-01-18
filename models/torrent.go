@@ -2,7 +2,13 @@ package models
 
 // TorrentInfo is the resulting structure returned by Parse
 type TorrentInfo struct {
-	Title      string
+	Title      string `json:"-"`
+	Name       string `json:"-"`
+	Extension  string `json:"extension"`
+	Location   string `json:"location"`
+	MagnetURL  string `json:"magnet_url,omitempty"`
+	Downloaded bool   `json:"downloaded,omitempty"`
+	Seeds      int    `json:"seeds,omitempty"`
 	Season     int    `json:"season,omitempty"`
 	Episode    int    `json:"episode,omitempty"`
 	Year       int    `json:"year,omitempty"`
@@ -24,10 +30,4 @@ type TorrentInfo struct {
 	Unrated    bool   `json:"unrated,omitempty"`
 	Size       int64  `json:"size,omitempty"`
 	ThreeD     bool   `json:"3d,omitempty"`
-	Name       string `json:"name"`
-	Extension  string `json:"extension"`
-	Location   string `json:"location"`
-	MagnetURL  string `json:"magnet_url,omitempty"`
-	Downloaded bool   `json:"downloaded,omitempty"`
-	Seeds      int    `json:"seeds,omitempty"`
 }

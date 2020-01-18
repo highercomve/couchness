@@ -3,10 +3,12 @@ package common
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/highercomve/couchness/models"
 	"github.com/highercomve/couchness/services/eztv"
+	"github.com/highercomve/couchness/services/rarbg"
 	"github.com/highercomve/couchness/services/showrss"
 	"github.com/highercomve/couchness/storage"
 	"github.com/highercomve/couchness/utils"
@@ -16,12 +18,14 @@ import (
 var (
 	showRssService models.FollowService = showrss.New()
 	eztvService    models.FollowService = eztv.New()
+	rargbService   models.FollowService = rarbg.New()
 )
 
 // FollowServices map all types of services
 var FollowServices = map[string]models.FollowService{
 	showrss.ServiceType: showRssService,
 	eztv.ServiceType:    eztvService,
+	rarbg.ServiceType:   rargbService,
 }
 
 // DownloadTorrent use transmission to queue the torrent
@@ -65,13 +69,22 @@ func DownloadShow(show *models.Show) error {
 }
 
 func downloadSince(show *models.Show) ([]*transmission.Torrent, error) {
-	service := FollowServices[show.Configuration.Service]
+	services := getShowServices(show)
 
-	allEpisodes, err := getTorrentsSince(show, service)
-	if err != nil {
-		return nil, err
+	var allEpisodes models.Episodes
+	eztvIndex := findOnSlice(services, eztv.ServiceType)
+	if eztvIndex >= 0 {
+		eztvEpisodes, err := getTorrentsSince(show, FollowServices[eztv.ServiceType])
+		if err != nil {
+			return nil, err
+		}
+		allEpisodes = append(allEpisodes, eztvEpisodes...)
+		services = append(services[:eztvIndex], services[eztvIndex+1:]...)
 	}
+	otherEpisodes := getShowEpisodesFromServices(show, services, 1, 100)
 
+	allEpisodes = append(allEpisodes, otherEpisodes...)
+	storage.SortEpisodes(allEpisodes)
 	downloadedEpisodes := utils.GetEpisodeVersionSince(show.Episodes, show.Configuration.Since, "", "", "")
 	eztvEpisodes := utils.GetMaxSeedsFromList(utils.GetEpisodeVersionSince(
 		allEpisodes,
@@ -98,31 +111,25 @@ func downloadSince(show *models.Show) ([]*transmission.Torrent, error) {
 
 // DownloadLatest download last episode if is not already downloaded
 func DownloadLatest(show *models.Show) (*transmission.Torrent, error) {
-	var s models.Show = *show
-	service := FollowServices[show.Configuration.Service]
-
-	newShow, err := service.GetShowData(&s, 1, 10)
-	if err != nil {
-		return nil, err
+	episodes := getShowEpisodesFromServices(show, getShowServices(show), 1, 30)
+	if len(episodes) == 0 {
+		return nil, errors.New("Show is not on show services")
 	}
 
-	if len(newShow.Episodes) == 0 {
-		return nil, errors.New("Show is not on " + service.GetID())
-	}
-
-	oldVersions := utils.GetEpisodeVersion(show.Episodes, newShow.Episodes[0].Season, newShow.Episodes[0].Episode, "", "", "")
+	storage.SortEpisodes(episodes)
+	oldVersions := utils.GetEpisodeVersion(show.Episodes, episodes[0].Season, episodes[0].Episode, "", "", "")
 	if len(oldVersions) == 0 {
-		newVersions := utils.GetEpisodeVersion(
-			newShow.Episodes,
-			newShow.Episodes[0].Season,
-			newShow.Episodes[0].Episode,
-			newShow.Configuration.Codec,
-			newShow.Configuration.Resolution,
-			newShow.Configuration.Quality,
-		)
+		newVersions := utils.GetMaxSeedsFromList(utils.GetEpisodeVersion(
+			episodes,
+			episodes[0].Season,
+			episodes[0].Episode,
+			show.Configuration.Codec,
+			show.Configuration.Resolution,
+			show.Configuration.Quality,
+		))
 
 		if len(newVersions) == 0 {
-			newVersions = utils.GetEpisodeVersion(newShow.Episodes, newShow.Episodes[0].Season, newShow.Episodes[0].Episode, "", "", "")
+			newVersions = utils.GetEpisodeVersion(episodes, episodes[0].Season, episodes[0].Episode, "", "", "")
 		}
 
 		if len(newVersions) == 0 {
@@ -153,10 +160,10 @@ func getTorrentsSince(show *models.Show, service models.FollowService) (models.E
 			return nil, err
 		}
 
-                if len(s.Episodes) == 0 {
-                        sinceNotComplete = false
-                        continue
-                }
+		if len(s.Episodes) == 0 {
+			sinceNotComplete = false
+			continue
+		}
 
 		pages := utils.DivCeil(s.TorrentCount, limit)
 		lastElement := len(s.Episodes) - 1
@@ -171,4 +178,43 @@ func getTorrentsSince(show *models.Show, service models.FollowService) (models.E
 	}
 
 	return allEpisodes, nil
+}
+
+func getShowEpisodesFromServices(show *models.Show, services []string, page, limit int) models.Episodes {
+	var episodes models.Episodes
+
+	for _, service := range services {
+		service := FollowServices[service]
+		s, err := service.GetShowData(
+			&models.Show{ID: show.ID, ExternalID: show.ExternalID, Episodes: show.Episodes},
+			page,
+			limit,
+		)
+		if err != nil {
+			fmt.Printf("error downloading from %s", service)
+			fmt.Println(err.Error())
+		}
+		episodes = append(episodes, s.Episodes...)
+	}
+
+	return episodes
+}
+
+func findOnSlice(s []string, searchterm string) int {
+	i := sort.SearchStrings(s, searchterm)
+	if i < len(s) && s[i] == searchterm {
+		return i
+	}
+
+	return -1
+}
+
+func getShowServices(show *models.Show) []string {
+	var services []string
+	if len(show.Configuration.Services) > 0 {
+		services = show.Configuration.Services
+	} else {
+		services = []string{show.Configuration.Service}
+	}
+	return services
 }

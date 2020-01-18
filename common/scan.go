@@ -95,21 +95,28 @@ func ScanShowDir(dir string, show *models.Show) (*models.Show, error) {
 		return nil, err
 	}
 
+	show.Episodes = make(models.Episodes, 0)
 	for _, m := range matches {
 		basename := filepath.Base(m)
 		extension := filepath.Ext(m)
-		sName := showFolder(m, dir)
 		EpisodeData, err := utils.ParseTorrent(basename)
 		if err != nil {
 			return nil, err
 		}
 
-		EpisodeData.Name = sName
+		EpisodeData.Name = show.ID
 		EpisodeData.Extension = extension
 		EpisodeData.Location = m
 		EpisodeData.Downloaded = true
 
-		show.Title = EpisodeData.Title
+		if show.ExternalID == "" {
+			title, id, externalID, err := SearchAndSelectOnImdb(show.Title)
+			if err != nil {
+				show.Title = title
+				show.ID = id
+				show.ExternalID = externalID
+			}
+		}
 		show.Episodes = append(show.Episodes, EpisodeData)
 	}
 

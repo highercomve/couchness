@@ -19,12 +19,15 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
+github.com/kylelemons/godebug v1.1.0/go.mod h1:9/0rRGxNHcop5bhtWyNeEfOS8JIWk580+fNqagV/RAw=
 github.com/markbates/pkger v0.14.0 h1:z6KCEBkr3zJTkAMz5SJzjA9Izo+Ipb6XXvOIjQEW+PU=
 github.com/markbates/pkger v0.14.0/go.mod h1:0JoVlrol20BSywW79rN3kdFFsE5xYM+rSCQDXbLhiuI=
 github.com/odwrtw/transmission v0.0.0-20191103153330-cbf08fea0b8c h1:A9cGpEYv1vbK4NjkKVbGQ80/h8AJMsuvgRmy1erWnDY=
 github.com/odwrtw/transmission v0.0.0-20191103153330-cbf08fea0b8c/go.mod h1:geyfqmhRrxMwbEo5RPwf5rw5vITQHHQlA7+azUQSIJM=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
+github.com/qopher/go-torrentapi v0.0.0-20190920055042-036fa2f8cb12 h1:3JaDU8VgnPp6RSsl0vFYcTb5rGO9BZTMmxd8P4Rv8Z8=
+github.com/qopher/go-torrentapi v0.0.0-20190920055042-036fa2f8cb12/go.mod h1:Ysid2lEJaS9085EvrwhPCqyeOqToK4McaIPmZgkgJd4=
 github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be h1:ta7tUOvsPHVHGom5hKW5VXNc2xZIkfCKP8iaqOyYtUQ=
 github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be/go.mod h1:MIDFMn7db1kT65GmV94GzpX9Qdi7N/pQlwb+AN8wh+Q=
 github.com/russross/blackfriday/v2 v2.0.1 h1:lPqVAte+HuHNfhJ/0LC98ESWRz8afy9tM/0RK8m9o+Q=
