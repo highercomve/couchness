@@ -28,7 +28,7 @@ jobs:
           fi
 
       - name: Build
-        run: make clean && make 
+        run: make clean && make  build
       
       - name: Upload linux arm
         uses: actions/upload-artifact@v1
@@ -52,10 +52,10 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: couchness_windows_amd64
-          path: build/windows_amd64/couchness
+          path: build/windows_amd64/couchness.exe
 
       - name: Upload Windows 32 bit
         uses: actions/upload-artifact@v1
         with:
           name: couchness_windows_386
-          path: build/windows_386/couchness
+          path: build/windows_386/couchness.exe

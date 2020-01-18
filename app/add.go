@@ -8,6 +8,8 @@ import (
 	"github.com/gosimple/slug"
 	"github.com/highercomve/couchness/common"
 	"github.com/highercomve/couchness/models"
+	"github.com/highercomve/couchness/services/eztv"
+	"github.com/highercomve/couchness/services/rarbg"
 	"github.com/highercomve/couchness/storage"
 	"github.com/urfave/cli/v2"
 )
@@ -63,11 +65,11 @@ func Add() *cli.Command {
 				Usage:    "Where is going to save the show",
 				Required: false,
 			},
-			&cli.StringFlag{
-				Name:        "service",
+			&cli.StringSliceFlag{
+				Name:        "services",
 				Aliases:     []string{"s"},
-				Usage:       "Type of service (showrss, eztv)",
-				DefaultText: "eztv",
+				Usage:       "Coma separated type of services (showrss, eztv, rarbg)",
+				DefaultText: "[eztv, rarbg]",
 				Required:    false,
 			},
 			&cli.StringFlag{
@@ -87,7 +89,7 @@ func Add() *cli.Command {
 			key := c.String("key")
 			title := c.String("title")
 			folder := c.String("folder")
-			service := c.String("service")
+			services := c.StringSlice("services")
 			followType := c.String("type")
 			externalID := c.String("external-id")
 			codec := c.String("codec")
@@ -99,8 +101,8 @@ func Add() *cli.Command {
 				key = slug.Make(title)
 			}
 
-			if service == "" {
-				service = "eztv"
+			if len(services) == 0 {
+				services = []string{eztv.ServiceType, rarbg.ServiceType}
 			}
 
 			if followType == "" {
@@ -129,7 +131,7 @@ func Add() *cli.Command {
 				Directory:  folderPath + "/",
 				ExternalID: externalID,
 				Configuration: &models.ShowConf{
-					Service:    service,
+					Services:   services,
 					FollowType: followType,
 					Codec:      codec,
 					Quality:    quality,

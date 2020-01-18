@@ -8,4 +8,7 @@ var Commands []*cli.Command = []*cli.Command{
 	Scan(),
 	Download(),
 	UpdateAll(),
+	Migrate(),
+	Update(),
+	Shows(),
 }

@@ -24,24 +24,26 @@ type Episodes []*TorrentInfo
 // Show how a show is defined
 type Show struct {
 	// sync.RWMutex
-	ID            string `json:"id"`
-	Title         string `json:"title"`
-	ExternalID    string `json:"external-id"`
-	Directory     string `json:"directory"`
-	TorrentCount  int    `json:"torrents_count"`
-	Configuration *ShowConf
-	Episodes      Episodes
+	ID            string    `json:"id"`
+	Title         string    `json:"title"`
+	ExternalID    string    `json:"external-id"`
+	Directory     string    `json:"directory"`
+	TorrentCount  int       `json:"torrents_count,omitempty"`
+	EpisodesCount int       `json:"episodes_count,omitempty"`
+	Configuration *ShowConf `json:"configuration"`
+	Episodes      Episodes  `json:"episodes,omitempty"`
 }
 
 // ShowConf show configuration
 type ShowConf struct {
-	FollowType string `json:"follow_type"`
-	Service    string `json:"service"`
-	Since      int    `json:"since"`
-	Quality    string `json:"quality"`
-	Codec      string `json:"codec"`
-	Resolution string `json:"resolution"`
-	FilterBy   string `json:"filter-by"`
+	FollowType string   `json:"follow_type"`
+	Services   []string `json:"services,omitempty"`
+	Service    string   `json:"service"`
+	Since      int      `json:"since"`
+	Quality    string   `json:"quality"`
+	Codec      string   `json:"codec"`
+	Resolution string   `json:"resolution"`
+	FilterBy   string   `json:"filter-by"`
 }
 
 // ShowsMap show torrent information
