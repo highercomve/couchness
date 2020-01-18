@@ -13,6 +13,9 @@ const (
 
 	// FollowTypeAll follow all the episodes of the series
 	FollowTypeAll = "all"
+
+	// FollowTypeManual desactivate couch from follow this show
+	FollowTypeManual = "manual"
 )
 
 // Episodes an array of torrent information
