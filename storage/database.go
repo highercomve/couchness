@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"fmt"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -45,7 +44,6 @@ func Init(configDir string) error {
 			return err
 		}
 	}
-	fmt.Println(configDir)
 	Db, err = New(configDir, nil)
 	if err != nil {
 		return err
