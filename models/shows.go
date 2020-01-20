@@ -54,6 +54,11 @@ func (s *Show) PrintString() string {
 	return fmt.Sprintf("%s - external ID %s - internal ID %s", s.Title, s.ExternalID, s.ID)
 }
 
+// Summary get show summary information
+func (s *Show) Summary() string {
+	return fmt.Sprintf("(ID: %s) %s has %d episodes in total [FollowType=%s]", s.ID, s.Title, s.EpisodesCount, s.Configuration.FollowType)
+}
+
 // // AddOrUpdateEpisode Add or update an episode if already exist
 // func (s *Show) AddOrUpdateEpisode(*TorrentInfo) (*Show, error) {
 // 	return s, nil

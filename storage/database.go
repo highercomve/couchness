@@ -1,13 +1,18 @@
 package storage
 
 import (
+	"fmt"
+	"os"
 	"os/user"
+	"path/filepath"
 
+	"github.com/highercomve/couchness/models"
 	scribble "github.com/sdomino/scribble"
 )
 
 // Storage manage storage
 type Storage struct {
+	Directory   string
 	Driver      *scribble.Driver
 	Collections *Collections
 }
@@ -25,21 +30,34 @@ var Db = &Storage{}
 var DbDir = ""
 
 // Init initialize global Db
-func Init() error {
+func Init(configDir string) error {
 	var err error
 
-	usr, err := user.Current()
+	if configDir == "" {
+		usr, err := user.Current()
+		if err != nil {
+			return err
+		}
+		configDir = usr.HomeDir + "/.couchness"
+	} else {
+		configDir, err = filepath.Abs(configDir)
+		if err != nil {
+			return err
+		}
+	}
+	fmt.Println(configDir)
+	Db, err = New(configDir, nil)
 	if err != nil {
 		return err
 	}
 
-	DbDir = usr.HomeDir + "/.couchness"
-	Db, err = New(DbDir, nil)
-	if err != nil {
-		return err
-	}
-
-	AppConfiguration, err = Db.GetAppConfiguration()
+	AppConfiguration, err = Db.GetAppConfiguration(&models.AppConfiguration{
+		MediaDir:         os.Getenv("COUCHNESS_MEDIA_DIR"),
+		OmdbAPIKey:       os.Getenv("COUCHNESS_OMDB_API_KEY"),
+		TransmissionAuth: os.Getenv("COUCHNESS_TRANSMISSION_AUTH"),
+		TransmissionHost: os.Getenv("COUCHNESS_TRANSMISSION_HOST"),
+		TransmissionPort: os.Getenv("COUCHNESS_TRANSMISSION_PORT"),
+	})
 	return err
 }
 
@@ -51,7 +69,8 @@ func New(dir string, options *scribble.Options) (*Storage, error) {
 	}
 
 	return &Storage{
-		Driver: db,
+		Directory: dir,
+		Driver:    db,
 		Collections: &Collections{
 			Shows:         "shows",
 			Configuration: "configuration",

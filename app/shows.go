@@ -13,20 +13,32 @@ func Shows() *cli.Command {
 	return &cli.Command{
 		Name:        "shows",
 		ArgsUsage:   "",
-		Usage:       "show [SHOW_ID]",
+		Usage:       "show",
 		HelpName:    "",
 		Description: "List all or one show",
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:    "detail",
+				Aliases: []string{"d"},
+			},
+		},
 		Action: func(c *cli.Context) error {
-			args := c.Args()
-			showID := args.Get(0)
+			detail := c.Bool("detail")
 
-			shows, err := common.GetShow(showID)
+			shows, err := common.GetShows()
 			if err != nil {
 				return cli.NewExitError(err.Error(), 0)
 			}
 
-			showJSON, _ := json.MarshalIndent(shows, "", "  ")
-			fmt.Printf("%s \n", showJSON)
+			if detail {
+				showJSON, _ := json.MarshalIndent(shows, "", "  ")
+				fmt.Printf("%s \n", showJSON)
+				return nil
+			}
+
+			for _, s := range shows {
+				fmt.Println(s.Summary())
+			}
 
 			return nil
 		},

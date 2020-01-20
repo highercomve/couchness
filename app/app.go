@@ -11,4 +11,5 @@ var Commands []*cli.Command = []*cli.Command{
 	Migrate(),
 	Update(),
 	Shows(),
+	Show(),
 }
