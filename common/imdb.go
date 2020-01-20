@@ -34,7 +34,7 @@ func SearchShowInfo(showName string) (*OmdbResponse, error) {
 		url.QueryEscape(showName),
 	)
 	url := omdbAPIURL + query
-	fmt.Printf("Getting Show information from IMDB, using this API call: \n %s \n", url)
+	fmt.Printf("Getting Show information from IMDB... \n")
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Printf("%d", res.StatusCode)
