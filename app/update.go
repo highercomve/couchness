@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 
+	"github.com/highercomve/couchness/common"
 	"github.com/urfave/cli/v2"
 )
 
@@ -24,7 +25,12 @@ func Update() *cli.Command {
 			}
 
 			fmt.Println("Scanning and updating " + showID + " ...")
-			
+
+			err := common.Update(showID)
+			if err != nil {
+				return cli.NewExitError(err.Error(), 0)
+			}
+
 			fmt.Printf("\n\r\n\rAll Show now are updated! \n\r")
 			return nil
 		},
