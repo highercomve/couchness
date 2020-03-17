@@ -13,6 +13,6 @@ require (
 	github.com/qopher/go-torrentapi v0.0.0-20190920055042-036fa2f8cb12
 	github.com/sdomino/scribble v0.0.0-20191024200645-4116320640ba
 	github.com/swaggo/cli v1.22.2
-	github.com/urfave/cli/v2 v2.1.1
+	github.com/urfave/cli/v2 v2.2.0
 	go.etcd.io/etcd v3.3.18+incompatible
 )

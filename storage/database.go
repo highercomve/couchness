@@ -51,6 +51,7 @@ func Init(configDir string) error {
 
 	AppConfiguration, err = Db.GetAppConfiguration(&models.AppConfiguration{
 		MediaDir:         os.Getenv("COUCHNESS_MEDIA_DIR"),
+		MediaDirs:        []string{os.Getenv("COUCHNESS_MEDIA_DIR")},
 		OmdbAPIKey:       os.Getenv("COUCHNESS_OMDB_API_KEY"),
 		TransmissionAuth: os.Getenv("COUCHNESS_TRANSMISSION_AUTH"),
 		TransmissionHost: os.Getenv("COUCHNESS_TRANSMISSION_HOST"),

@@ -12,4 +12,5 @@ var Commands []*cli.Command = []*cli.Command{
 	Update(),
 	Shows(),
 	Show(),
+	AddMedia(),
 }

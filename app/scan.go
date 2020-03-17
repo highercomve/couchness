@@ -15,7 +15,7 @@ func Scan() *cli.Command {
 		Name:        "scan",
 		Aliases:     []string{"s"},
 		ArgsUsage:   "",
-		Usage:       "scan FOLDER",
+		Usage:       "scan",
 		HelpName:    "",
 		Description: "Scan folder for series",
 		Flags: []cli.Flag{
@@ -29,29 +29,26 @@ func Scan() *cli.Command {
 			},
 		},
 		Action: func(c *cli.Context) error {
-			args := c.Args()
-			folder := args.Get(0)
 			interactive := c.Bool("interactive")
 			initialize := c.Bool("initialize")
 
-			if folder == "" {
-				folder = storage.AppConfiguration.MediaDir
+			for _, directory := range storage.AppConfiguration.MediaDirs {
+				folderPath, err := filepath.Abs(directory)
+				if err != nil {
+					return cli.NewExitError(err.Error(), 0)
+				}
+
+				fmt.Println("Scaning folder: " + folderPath)
+				shows, err := common.Scan(folderPath+"/", interactive, initialize)
+				if err != nil {
+					return cli.NewExitError(err.Error(), 0)
+				}
+
+				for _, s := range shows {
+					fmt.Printf("Show %s with %d episodes in total \n\r", s.Title, len(s.Episodes))
+				}
 			}
 
-			folderPath, err := filepath.Abs(folder)
-			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
-			}
-
-			fmt.Println("Scaning folder: " + folderPath)
-			shows, err := common.Scan(folderPath+"/", interactive, initialize)
-			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
-			}
-
-			for _, s := range shows {
-				fmt.Printf("Show %s with %d episodes in total \n\r", s.Title, len(s.Episodes))
-			}
 			return nil
 		},
 	}
