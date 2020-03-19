@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	"github.com/highercomve/couchness/models"
-	"github.com/swaggo/cli"
 )
 
 const (
@@ -58,16 +57,29 @@ func (s *Storage) GetAppConfiguration(configuration *models.AppConfiguration) (*
 
 // AddMediaDir add a new media directory
 func (s *Storage) AddMediaDir(directory string) error {
-	err := s.Driver.Read(s.Collections.Configuration, appConfID, AppConfiguration)
-	if err == nil {
+	c := &models.AppConfiguration{}
+	err := s.Driver.Read(s.Collections.Configuration, appConfID, c)
+	if err != nil {
 		return err
 	}
 
 	folderPath, err := filepath.Abs(directory)
 	if err != nil {
-		return cli.NewExitError(err.Error(), 0)
+		return err
 	}
-	AppConfiguration.MediaDirs = append(AppConfiguration.MediaDirs, folderPath)
 
-	return s.Driver.Write(s.Collections.Configuration, appConfID, AppConfiguration)
+	mediaDirMap := make(map[string]bool)
+	for _, media := range c.MediaDirs {
+		mediaDirMap[media] = true
+	}
+
+	if _, ok := mediaDirMap[c.MediaDir]; !ok {
+		c.MediaDirs = append(c.MediaDirs, c.MediaDir)
+	}
+
+	if _, ok := mediaDirMap[folderPath]; !ok {
+		c.MediaDirs = append(c.MediaDirs, folderPath+"/")
+	}
+
+	return s.Driver.Write(s.Collections.Configuration, appConfID, c)
 }
