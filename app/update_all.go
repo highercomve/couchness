@@ -19,21 +19,23 @@ func UpdateAll() *cli.Command {
 		HelpName:    "",
 		Description: "update all your shows",
 		Action: func(c *cli.Context) error {
-			folder := storage.AppConfiguration.MediaDir
-			folderPath, err := filepath.Abs(folder)
-			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
-			}
-
 			fmt.Println("Updating database...")
-			shows, err := common.Scan(folderPath+"/", false, false)
-			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
-			}
 
-			for _, s := range shows {
-				fmt.Printf("Updating %s ... \n", s.Title)
-				common.Download(s.ID)
+			for _, directory := range storage.AppConfiguration.MediaDirs {
+				folderPath, err := filepath.Abs(directory)
+				if err != nil {
+					return cli.NewExitError(err.Error(), 0)
+				}
+
+				shows, err := common.Scan(folderPath+"/", false, false)
+				if err != nil {
+					return cli.NewExitError(err.Error(), 0)
+				}
+
+				for _, s := range shows {
+					fmt.Printf("Updating %s ... \n", s.Title)
+					common.Download(s.ID)
+				}
 			}
 
 			fmt.Printf("\n\r\n\rAll Show now are updated! \n\r")
