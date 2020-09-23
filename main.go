@@ -27,7 +27,7 @@ func main() {
 			},
 		},
 		Authors: []*cli.Author{
-			&cli.Author{
+			{
 				Name:  "Sergio Marin",
 				Email: "",
 			},
