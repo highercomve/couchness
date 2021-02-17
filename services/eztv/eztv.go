@@ -98,6 +98,7 @@ func (s Service) GetShowData(show *models.Show, page, limit int) (*models.Show, 
 		if err != nil {
 			continue
 		}
+		torrentInfo.Title = torrent.Filename
 		torrentInfo.MagnetURL = torrent.MagnetURL
 		torrentInfo.Downloaded = false
 		torrentInfo.Extension = filepath.Ext(torrent.Filename)

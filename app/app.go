@@ -13,4 +13,5 @@ var Commands []*cli.Command = []*cli.Command{
 	Shows(),
 	Show(),
 	AddMedia(),
+	DownloadEpisode(),
 }

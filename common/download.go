@@ -15,3 +15,15 @@ func Download(showID string) error {
 
 	return DownloadShow(show)
 }
+
+// DownloadEpisode download show using the show id and episode
+func DownloadEpisode(showID, episode string, limit int) error {
+	show := &models.Show{}
+	err := storage.Db.Driver.Read(storage.Db.Collections.Shows, showID, show)
+	if err != nil {
+		return err
+	}
+
+	_, err = DownloadEpisodeOfShow(show, episode, limit)
+	return err
+}

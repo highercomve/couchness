@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/bmatcuk/doublestar v1.3.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
+	github.com/dustin/go-humanize v1.0.0
 	github.com/gosimple/slug v1.9.0
 	github.com/jcelliott/lumber v0.0.0-20160324203708-dd349441af25 // indirect
 	github.com/odwrtw/transmission v0.0.0-20200408122227-b562b9fbcbee

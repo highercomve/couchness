@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/dustin/go-humanize"
 	"github.com/highercomve/couchness/models"
 	"github.com/highercomve/couchness/services/eztv"
 	"github.com/highercomve/couchness/services/rarbg"
@@ -66,6 +67,45 @@ func DownloadShow(show *models.Show) error {
 	default:
 		return errors.New("Type of show follow not implemented")
 	}
+}
+
+// DownloadEpisodeOfShow download show depending on show configuration
+func DownloadEpisodeOfShow(show *models.Show, ep string, limit int) (*transmission.Torrent, error) {
+	episodes := getShowEpisodesFromServices(show, getShowServices(show), 1, limit)
+	if len(episodes) == 0 {
+		return nil, errors.New("Show is not on show services")
+	}
+
+	selectedVersions := []*models.TorrentInfo{}
+	i := 1
+	for _, episode := range episodes {
+		if strings.Contains(strings.ToLower(episode.Location), strings.ToLower(ep)) && !episode.Downloaded {
+			selectedVersions = append(
+				selectedVersions,
+				episode,
+			)
+			i = i + 1
+		}
+	}
+
+	if len(selectedVersions) == 0 {
+		fmt.Println("Episode not found: ")
+		return nil, nil
+	}
+
+	fmt.Println("Select the episode you want to download: ")
+	for i, episode := range selectedVersions {
+		fmt.Printf("%d) %s - size: %s - seeds: %d \n\r", i+1, episode.Title, humanize.Bytes(uint64(episode.Size)), episode.Seeds)
+	}
+
+	var input int
+	fmt.Scan(&input)
+
+	if input > len(selectedVersions) || input < 1 {
+		return nil, fmt.Errorf("The selection most be between %d and 1", len(selectedVersions))
+	}
+
+	return DownloadTorrent(selectedVersions[input-1].MagnetURL, show.Directory)
 }
 
 func downloadSince(show *models.Show) ([]*transmission.Torrent, error) {
