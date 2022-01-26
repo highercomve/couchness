@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/highercomve/couchness/app"
@@ -34,5 +35,8 @@ func main() {
 		},
 	}
 	a.Commands = append(app.Commands, externalCommands...)
-	a.Run(os.Args)
+	err := a.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
