@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/highercomve/couchness/common"
+	"github.com/highercomve/couchness/models"
 	"github.com/highercomve/couchness/storage"
 	"github.com/urfave/cli/v2"
 )
@@ -33,7 +34,12 @@ func UpdateAll() *cli.Command {
 				}
 
 				for _, s := range shows {
-					fmt.Printf("Updating %s ... \n", s.Title)
+					if s.Configuration.FollowType == models.FollowTypeManual {
+						fmt.Printf("Show %s is in manual mode... \n", s.Title)
+						continue
+					}
+
+					fmt.Printf("Searching for episodes %s ... \n", s.Title)
 					common.Download(s.ID)
 				}
 			}
