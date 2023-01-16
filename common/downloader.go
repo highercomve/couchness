@@ -65,7 +65,7 @@ func DownloadShow(show *models.Show) error {
 		_, err := downloadSince(show)
 		return err
 	default:
-		return errors.New("Type of show follow not implemented")
+		return errors.New("type of show follow not implemented")
 	}
 }
 
@@ -73,7 +73,7 @@ func DownloadShow(show *models.Show) error {
 func DownloadEpisodeOfShow(show *models.Show, ep string, limit int) (*transmission.Torrent, error) {
 	episodes := getShowEpisodesFromServices(show, getShowServices(show), 1, limit)
 	if len(episodes) == 0 {
-		return nil, errors.New("Show is not on show services")
+		return nil, errors.New("show is not on show services")
 	}
 
 	selectedVersions := []*models.TorrentInfo{}
@@ -102,7 +102,7 @@ func DownloadEpisodeOfShow(show *models.Show, ep string, limit int) (*transmissi
 	fmt.Scan(&input)
 
 	if input > len(selectedVersions) || input < 1 {
-		return nil, fmt.Errorf("The selection most be between %d and 1", len(selectedVersions))
+		return nil, fmt.Errorf("the selection most be between %d and 1", len(selectedVersions))
 	}
 
 	return DownloadTorrent(selectedVersions[input-1].MagnetURL, show.Directory)
@@ -153,7 +153,7 @@ func downloadSince(show *models.Show) ([]*transmission.Torrent, error) {
 func DownloadLatest(show *models.Show) (*transmission.Torrent, error) {
 	episodes := getShowEpisodesFromServices(show, getShowServices(show), 1, 30)
 	if len(episodes) == 0 {
-		return nil, errors.New("Show is not on show services")
+		return nil, errors.New("show is not on show services")
 	}
 
 	storage.SortEpisodes(episodes)
@@ -173,13 +173,13 @@ func DownloadLatest(show *models.Show) (*transmission.Torrent, error) {
 		}
 
 		if len(newVersions) == 0 {
-			return nil, errors.New("Error searching new episode version")
+			return nil, errors.New("error searching new episode version")
 		}
 
 		return DownloadTorrent(newVersions[0].MagnetURL, show.Directory)
 	}
 
-	return nil, errors.New("The latest version is already downladed")
+	return nil, errors.New("the latest version is already downladed")
 }
 
 func getTorrentsSince(show *models.Show, service models.FollowService) (models.Episodes, error) {
