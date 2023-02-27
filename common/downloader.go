@@ -233,8 +233,9 @@ func getShowEpisodesFromServices(show *models.Show, services []string, page, lim
 		if err != nil {
 			fmt.Printf("error downloading from %s", service)
 			fmt.Println(err.Error())
+		} else {
+			episodes = append(episodes, s.Episodes...)
 		}
-		episodes = append(episodes, s.Episodes...)
 	}
 
 	return episodes
