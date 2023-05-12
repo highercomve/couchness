@@ -34,7 +34,7 @@ func main() {
 			},
 		},
 	}
-	a.Commands = append(app.Commands, externalCommands...)
+	a.Commands = append(externalCommands, app.Commands...)
 	err := a.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)

@@ -32,16 +32,16 @@ func Scan() *cli.Command {
 			interactive := c.Bool("interactive")
 			initialize := c.Bool("initialize")
 
-			for _, directory := range storage.AppConfiguration.MediaDirs {
+			for _, directory := range storage.AppConfiguration.ShowsDirs {
 				folderPath, err := filepath.Abs(directory)
 				if err != nil {
-					return cli.NewExitError(err.Error(), 0)
+					return cli.Exit(err.Error(), 0)
 				}
 
 				fmt.Println("Scaning folder: " + folderPath)
 				shows, err := common.Scan(folderPath+"/", interactive, initialize)
 				if err != nil {
-					return cli.NewExitError(err.Error(), 0)
+					return cli.Exit(err.Error(), 0)
 				}
 
 				for _, s := range shows {

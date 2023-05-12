@@ -28,12 +28,12 @@ func Show() *cli.Command {
 			detail := c.Bool("detail")
 
 			if showID == "" {
-				return cli.NewExitError("Show id is need it", 0)
+				return cli.Exit("Show id is need it", 0)
 			}
 
 			shows, err := common.GetShow(showID, detail)
 			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
+				return cli.Exit(err.Error(), 0)
 			}
 			showJSON, _ := json.MarshalIndent(shows, "", "  ")
 			fmt.Printf("%s \n", showJSON)

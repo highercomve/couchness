@@ -18,7 +18,10 @@ func Update(showID string) error {
 		return err
 	}
 
-	err = DownloadShow(show)
+	if err = DownloadShow(show); err != nil {
+		return err
+	}
+
 	_, err = storage.NewShowStorage(show).Save()
 	return err
 }

@@ -1,6 +1,9 @@
 package app
 
-import "github.com/urfave/cli/v2"
+import (
+	"github.com/highercomve/couchness/app/movies"
+	"github.com/urfave/cli/v2"
+)
 
 // Commands list of all commands
 var Commands []*cli.Command = []*cli.Command{
@@ -12,7 +15,8 @@ var Commands []*cli.Command = []*cli.Command{
 	Update(),
 	Shows(),
 	Show(),
-	AddMedia(),
+	AddShowsDirectory(),
 	DownloadEpisode(),
 	DisableShow(),
+	movies.Movies(),
 }

@@ -18,6 +18,7 @@ type Storage struct {
 
 // Collections All collections available
 type Collections struct {
+	Movies        string
 	Shows         string
 	Configuration string
 }
@@ -50,8 +51,9 @@ func Init(configDir string) error {
 	}
 
 	AppConfiguration, err = Db.GetAppConfiguration(&models.AppConfiguration{
-		MediaDir:         os.Getenv("COUCHNESS_MEDIA_DIR"),
-		MediaDirs:        []string{os.Getenv("COUCHNESS_MEDIA_DIR")},
+		MoviesDir:        os.Getenv("COUCHNESS_MOVIES_DIR"),
+		ShowsDir:         os.Getenv("COUCHNESS_SHOWS_DIR"),
+		ShowsDirs:        []string{os.Getenv("COUCHNESS_SHOWS_DIR")},
 		OmdbAPIKey:       os.Getenv("COUCHNESS_OMDB_API_KEY"),
 		TransmissionAuth: os.Getenv("COUCHNESS_TRANSMISSION_AUTH"),
 		TransmissionHost: os.Getenv("COUCHNESS_TRANSMISSION_HOST"),
@@ -71,6 +73,7 @@ func New(dir string, options *scribble.Options) (*Storage, error) {
 		Directory: dir,
 		Driver:    db,
 		Collections: &Collections{
+			Movies:        "movies",
 			Shows:         "shows",
 			Configuration: "configuration",
 		},
