@@ -32,7 +32,7 @@ func Migrate() *cli.Command {
 
 			shows, err := storage.GetAllShows()
 			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
+				return cli.Exit(err.Error(), 0)
 			}
 
 			for _, show := range shows {

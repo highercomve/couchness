@@ -241,6 +241,27 @@ func getShowEpisodesFromServices(show *models.Show, services []string, page, lim
 	return episodes
 }
 
+func getMovieVersionFromServices(movie *models.Movie, services []string, page, limit int) (models.Episodes, error) {
+	var episodes models.Episodes
+
+	for _, service := range services {
+		service := FollowServices[service]
+		s, err := service.GetShowData(
+			&models.Show{ID: movie.ID, ExternalID: movie.ExternalID, Episodes: movie.Episodes},
+			page,
+			limit,
+		)
+		if err != nil {
+			fmt.Printf("error downloading from %s \n", service)
+			return nil, err
+		} else {
+			episodes = append(episodes, s.Episodes...)
+		}
+	}
+
+	return episodes, nil
+}
+
 func findOnSlice(s []string, searchterm string) int {
 	i := sort.SearchStrings(s, searchterm)
 	if i < len(s) && s[i] == searchterm {

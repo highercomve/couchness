@@ -57,7 +57,7 @@ func Scan(folder string, i, r bool) ([]*models.Show, error) {
 		realShow := &models.Show{}
 		err := storage.Db.Driver.Read(storage.Db.Collections.Shows, show.ID, realShow)
 		if (err != nil && show.ExternalID == "" && i) || r {
-			title, id, externalID, err := SearchAndSelectOnImdb(show.Title)
+			title, id, externalID, err := SearchAndSelectOnImdb(show.Title, "")
 			if err != nil {
 				fmt.Printf("Error getting imdb information of the show %s \n", show.Title)
 				continue
@@ -110,7 +110,7 @@ func ScanShowDir(dir string, show *models.Show) (*models.Show, error) {
 		EpisodeData.Downloaded = true
 
 		if show.ExternalID == "" {
-			title, id, externalID, err := SearchAndSelectOnImdb(show.Title)
+			title, id, externalID, err := SearchAndSelectOnImdb(show.Title, "")
 			if err != nil {
 				show.Title = title
 				show.ID = id

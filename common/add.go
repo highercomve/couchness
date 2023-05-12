@@ -20,10 +20,10 @@ func Add(show *models.Show) (*models.Show, error) {
 }
 
 // SearchAndSelectOnImdb search and select correct show
-func SearchAndSelectOnImdb(title string) (string, string, string, error) {
+func SearchAndSelectOnImdb(title string, typeOf string) (string, string, string, error) {
 	externalID := ""
 	key := ""
-	possibleShows, err := SearchShowInfo(title)
+	possibleShows, err := SearchShowInfo(title, typeOf)
 	if err != nil {
 		return "", "", "", errors.New("Cant find " + title + " on omdb")
 	}
@@ -39,7 +39,7 @@ func SearchAndSelectOnImdb(title string) (string, string, string, error) {
 		fmt.Scan(&input)
 		show = possibleShows.Search[input-1]
 	} else {
-		return "", "", "", errors.New("Serie not found on imdb, maybe use the parameter -ex EXTERNAL_ID to set the imdb or showrss ID")
+		return "", "", "", errors.New("serie not found on imdb, maybe use the parameter -ex EXTERNAL_ID to set the imdb or showrss ID")
 	}
 
 	key = slug.Make(show.Title)

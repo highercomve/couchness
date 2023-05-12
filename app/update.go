@@ -21,14 +21,14 @@ func Update() *cli.Command {
 			showID := args.Get(0)
 
 			if showID == "" {
-				return cli.NewExitError("the showID is requeried", 0)
+				return cli.Exit("the showID is requeried", 0)
 			}
 
 			fmt.Println("Scanning and updating " + showID + " ...")
 
 			err := common.Update(showID)
 			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
+				return cli.Exit(err.Error(), 0)
 			}
 
 			fmt.Printf("\n\r\n\rAll Show now are updated! \n\r")

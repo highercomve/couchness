@@ -27,11 +27,15 @@ type OmdbResults struct {
 }
 
 // SearchShowInfo Search  show information in omdb
-func SearchShowInfo(showName string) (*OmdbResponse, error) {
+func SearchShowInfo(showName string, typeOf string) (*OmdbResponse, error) {
+	if typeOf == "" {
+		typeOf = "series"
+	}
 	query := fmt.Sprintf(
-		"?apikey=%s&s=%s&type=series",
+		"?apikey=%s&s=%s&type=%s",
 		url.QueryEscape(storage.AppConfiguration.OmdbAPIKey),
 		url.QueryEscape(showName),
+		typeOf,
 	)
 	url := omdbAPIURL + query
 	fmt.Printf("Getting Show information from IMDB... \n")

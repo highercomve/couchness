@@ -23,7 +23,7 @@ func (s *Storage) GetAppConfiguration(configuration *models.AppConfiguration) (*
 		return configuration, nil
 	}
 
-	if configuration.MediaDir == "" {
+	if configuration.ShowsDir == "" {
 		usr, err := user.Current()
 		if err != nil {
 			return nil, errors.New("Can load os username")
@@ -34,8 +34,8 @@ func (s *Storage) GetAppConfiguration(configuration *models.AppConfiguration) (*
 			return nil, errors.New("Can't create media folder: " + mediaDir)
 		}
 
-		configuration.MediaDir = mediaDir
-		configuration.MediaDirs = []string{mediaDir}
+		configuration.ShowsDir = mediaDir
+		configuration.ShowsDirs = []string{mediaDir}
 	}
 
 	if configuration.TransmissionAuth == "" {
@@ -69,16 +69,16 @@ func (s *Storage) AddMediaDir(directory string) error {
 	}
 
 	mediaDirMap := make(map[string]bool)
-	for _, media := range c.MediaDirs {
+	for _, media := range c.ShowsDirs {
 		mediaDirMap[media] = true
 	}
 
-	if _, ok := mediaDirMap[c.MediaDir]; !ok {
-		c.MediaDirs = append(c.MediaDirs, c.MediaDir)
+	if _, ok := mediaDirMap[c.ShowsDir]; !ok {
+		c.ShowsDirs = append(c.ShowsDirs, c.ShowsDir)
 	}
 
 	if _, ok := mediaDirMap[folderPath]; !ok {
-		c.MediaDirs = append(c.MediaDirs, folderPath+"/")
+		c.ShowsDirs = append(c.ShowsDirs, folderPath+"/")
 	}
 
 	return s.Driver.Write(s.Collections.Configuration, appConfID, c)

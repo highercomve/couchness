@@ -23,7 +23,7 @@ func Download() *cli.Command {
 			showID := args.Get(0)
 
 			if showID == "" {
-				return cli.NewExitError("the showID is requeried", 0)
+				return cli.Exit("the showID is requeried", 0)
 			}
 
 			fmt.Println("Starting posible download of " + showID)
@@ -58,10 +58,10 @@ func DownloadEpisode() *cli.Command {
 			limit := 100
 
 			if showID == "" {
-				return cli.NewExitError("the showID is required", 0)
+				return cli.Exit("the showID is required", 0)
 			}
 			if episode == "" {
-				return cli.NewExitError("the episode is required", 0)
+				return cli.Exit("the episode is required", 0)
 			}
 
 			if max != "" {
