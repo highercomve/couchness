@@ -6,13 +6,13 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/dustin/go-humanize"
 	"github.com/highercomve/couchness/models"
 	"github.com/highercomve/couchness/services/eztv"
 	"github.com/highercomve/couchness/services/rarbg"
 	"github.com/highercomve/couchness/services/showrss"
 	"github.com/highercomve/couchness/storage"
 	"github.com/highercomve/couchness/utils"
+	"github.com/highercomve/couchness/utils/humanize"
 	"github.com/odwrtw/transmission"
 )
 

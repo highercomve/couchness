@@ -4,7 +4,6 @@ go 1.13
 
 require (
 	github.com/bmatcuk/doublestar v1.3.4
-	github.com/dustin/go-humanize v1.0.1
 	github.com/gosimple/slug v1.13.1
 	github.com/jcelliott/lumber v0.0.0-20160324203708-dd349441af25 // indirect
 	github.com/odwrtw/transmission v0.0.0-20221028215408-b11d7d55c759

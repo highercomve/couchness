@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/dustin/go-humanize"
+	"github.com/highercomve/couchness/utils/humanize"
 )
 
 // TorrentInfo is the resulting structure returned by Parse
