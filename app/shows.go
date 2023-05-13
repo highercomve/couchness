@@ -27,7 +27,7 @@ func Shows() *cli.Command {
 
 			shows, err := common.GetShows()
 			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
+				return cli.Exit(err.Error(), 0)
 			}
 
 			if detail {

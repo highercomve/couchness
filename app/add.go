@@ -110,18 +110,18 @@ func Add() *cli.Command {
 			}
 
 			if folder == "" {
-				folder = storage.AppConfiguration.MediaDir + key
+				folder = storage.AppConfiguration.ShowsDir + key
 			}
 
 			folderPath, err := filepath.Abs(folder)
 			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
+				return cli.Exit(err.Error(), 0)
 			}
 
 			if externalID == "" {
-				title, key, externalID, err = common.SearchAndSelectOnImdb(title)
+				title, key, externalID, err = common.SearchAndSelectOnImdb(title, "")
 				if err != nil {
-					return cli.NewExitError(err.Error(), 0)
+					return cli.Exit(err.Error(), 0)
 				}
 			}
 
@@ -144,7 +144,7 @@ func Add() *cli.Command {
 
 			_, err = common.Add(show)
 			if err != nil {
-				return cli.NewExitError(err.Error(), 0)
+				return cli.Exit(err.Error(), 0)
 			}
 
 			showData, _ := json.MarshalIndent(show, "", "    ")
