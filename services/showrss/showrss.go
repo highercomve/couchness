@@ -29,7 +29,7 @@ func (s Service) ShowURL(showID string, page, limit int) string {
 }
 
 // GetShowData get show data from service
-func (s Service) GetShowData(show *models.Show, page, limit int) (*models.Show, error) {
+func (s Service) GetShowData(show *models.Show, page, limit int, typeOf string) (*models.Show, error) {
 	return nil, nil
 }
 

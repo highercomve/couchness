@@ -1,7 +1,6 @@
 package movies
 
 import (
-	"encoding/json"
 	"fmt"
 	"path/filepath"
 
@@ -91,7 +90,7 @@ func Download() *cli.Command {
 			}
 
 			if folder == "" {
-				folder = storage.AppConfiguration.MoviesDir + key
+				folder = storage.AppConfiguration.MoviesDir
 			}
 
 			folderPath, err := filepath.Abs(folder)
@@ -121,17 +120,12 @@ func Download() *cli.Command {
 				},
 			}
 
-			fmt.Printf("Adding show %s \n\r", movie.PrintString())
-
 			_, err = common.AddMovie(movie)
 			if err != nil {
 				return cli.Exit(err.Error(), 0)
 			}
 
-			movieString, _ := json.MarshalIndent(movie, "", "    ")
-
-			fmt.Printf("%s \n", movieString)
-			fmt.Printf("saved on: %s%s.json \n\r", storage.AppConfiguration.MoviesDir, key)
+			fmt.Printf("\n\r\n\r Movie schedule to download at: %s \n\r", movie.Directory)
 			return nil
 		},
 	}
