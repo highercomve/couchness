@@ -1,6 +1,10 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/dustin/go-humanize"
+)
 
 // TorrentInfo is the resulting structure returned by Parse
 type TorrentInfo struct {
@@ -36,9 +40,9 @@ type TorrentInfo struct {
 
 func (torrent *TorrentInfo) Summary() string {
 	return fmt.Sprintf(
-		"%s \t Size: %d \t Seeds: %d",
+		"%s \t Size: %s \t Seeds: %d",
 		torrent.Title,
-		torrent.Size,
+		humanize.Bytes(uint64(torrent.Size)),
 		torrent.Seeds,
 	)
 }

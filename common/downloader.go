@@ -71,7 +71,7 @@ func DownloadShow(show *models.Show) error {
 
 // DownloadEpisodeOfShow download show depending on show configuration
 func DownloadEpisodeOfShow(show *models.Show, ep string, limit int) (*transmission.Torrent, error) {
-	episodes := getShowEpisodesFromServices(show, getShowServices(show), 1, limit)
+	episodes := getShowEpisodesFromServices(show, getShowServices(show), 1, limit, "")
 	if len(episodes) == 0 {
 		return nil, errors.New("show is not on show services")
 	}
@@ -121,7 +121,7 @@ func downloadSince(show *models.Show) ([]*transmission.Torrent, error) {
 		allEpisodes = append(allEpisodes, eztvEpisodes...)
 		services = append(services[:eztvIndex], services[eztvIndex+1:]...)
 	}
-	otherEpisodes := getShowEpisodesFromServices(show, services, 1, 100)
+	otherEpisodes := getShowEpisodesFromServices(show, services, 1, 100, "")
 
 	allEpisodes = append(allEpisodes, otherEpisodes...)
 	storage.SortEpisodes(allEpisodes)
@@ -151,7 +151,7 @@ func downloadSince(show *models.Show) ([]*transmission.Torrent, error) {
 
 // DownloadLatest download last episode if is not already downloaded
 func DownloadLatest(show *models.Show) (*transmission.Torrent, error) {
-	episodes := getShowEpisodesFromServices(show, getShowServices(show), 1, 30)
+	episodes := getShowEpisodesFromServices(show, getShowServices(show), 1, 30, "")
 	if len(episodes) == 0 {
 		return nil, errors.New("show is not on show services")
 	}
@@ -195,7 +195,7 @@ func getTorrentsSince(show *models.Show, service models.FollowService) (models.E
 			ExternalID: show.ExternalID,
 			Episodes:   []*models.TorrentInfo{},
 		}
-		s, err := service.GetShowData(s, page, limit)
+		s, err := service.GetShowData(s, page, limit, "")
 		if err != nil {
 			return nil, err
 		}
@@ -220,7 +220,7 @@ func getTorrentsSince(show *models.Show, service models.FollowService) (models.E
 	return allEpisodes, nil
 }
 
-func getShowEpisodesFromServices(show *models.Show, services []string, page, limit int) models.Episodes {
+func getShowEpisodesFromServices(show *models.Show, services []string, page, limit int, typeOf string) models.Episodes {
 	var episodes models.Episodes
 
 	for _, service := range services {
@@ -229,6 +229,7 @@ func getShowEpisodesFromServices(show *models.Show, services []string, page, lim
 			&models.Show{ID: show.ID, ExternalID: show.ExternalID, Episodes: show.Episodes},
 			page,
 			limit,
+			typeOf,
 		)
 		if err != nil {
 			fmt.Printf("error downloading from %s \n", service)
@@ -241,7 +242,7 @@ func getShowEpisodesFromServices(show *models.Show, services []string, page, lim
 	return episodes
 }
 
-func getMovieVersionFromServices(movie *models.Movie, services []string, page, limit int) (models.Episodes, error) {
+func getMovieVersionFromServices(movie *models.Movie, services []string, page, limit int, typeOf string) (models.Episodes, error) {
 	var episodes models.Episodes
 
 	for _, service := range services {
@@ -250,6 +251,7 @@ func getMovieVersionFromServices(movie *models.Movie, services []string, page, l
 			&models.Show{ID: movie.ID, ExternalID: movie.ExternalID, Episodes: movie.Episodes},
 			page,
 			limit,
+			typeOf,
 		)
 		if err != nil {
 			fmt.Printf("error downloading from %s \n", service)

@@ -37,17 +37,39 @@ func (s Service) ShowURL(showID string, page, limit int) string {
 }
 
 // GetShowData get show data from service
-func (s Service) GetShowData(show *models.Show, page, limit int) (*models.Show, error) {
+func (s Service) GetShowData(show *models.Show, page, limit int, typeOf string) (*models.Show, error) {
 	if show.ExternalID == "" {
 		return nil, errors.New("Show " + show.ID + " doesn't have a external ID")
 	}
 
 	api, err := torrentapi.New("cli")
+	if err != nil {
+		fmt.Printf("Error while querying torrentapi %s", err)
+		return nil, err
+	}
+
+	switch typeOf {
+	case "movies":
+		api.
+			Category(4).
+			Category(17).
+			Category(42).
+			Category(44).
+			Category(45).
+			Category(46).
+			Category(47).
+			Category(50).
+			Category(51).
+			Category(54)
+	default:
+		api.
+			Category(2).
+			Category(18).
+			Category(41).
+			Category(49)
+	}
+
 	api.
-		Category(2).
-		Category(18).
-		Category(41).
-		Category(49).
 		Format("json_extended").
 		Limit(limit).
 		SearchIMDb(show.ExternalID)
