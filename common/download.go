@@ -13,6 +13,11 @@ func Download(showID string) error {
 		return err
 	}
 
+	_, err = Scan(show.Directory, false, false)
+	if err != nil {
+		return err
+	}
+
 	return DownloadShow(show)
 }
 
