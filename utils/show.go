@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/highercomve/couchness/models"
+	"github.com/olekukonko/tablewriter"
 )
 
 // GetEpisodesMap get episodes map by season and episode
@@ -61,7 +62,7 @@ func GetEpisodeVersionSince(episodes models.Episodes, sN int, c, r, q string) mo
 	return eps
 }
 
-//GetMinimunSizeFromList get minimum size episodes from a list
+// GetMinimunSizeFromList get minimum size episodes from a list
 func GetMinimunSizeFromList(episodes models.Episodes) models.Episodes {
 	episodesMap := make(map[int]*models.TorrentInfo, 0)
 	for _, e := range episodes {
@@ -85,7 +86,7 @@ func GetMinimunSizeFromList(episodes models.Episodes) models.Episodes {
 	return newEpisodes
 }
 
-//GetMaxSeedsFromList get maximun amount of seeds episodes from a list
+// GetMaxSeedsFromList get maximun amount of seeds episodes from a list
 func GetMaxSeedsFromList(episodes models.Episodes) models.Episodes {
 	episodesMap := make(map[int]*models.TorrentInfo, 0)
 	for _, e := range episodes {
@@ -107,4 +108,22 @@ func GetMaxSeedsFromList(episodes models.Episodes) models.Episodes {
 		return se1 > se2
 	})
 	return newEpisodes
+}
+
+func PrintTable(header []string, values [][]string) *tablewriter.Table {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetBorder(false)
+	table.SetHeaderLine(false)
+	table.SetColumnSeparator(" ")
+	table.SetHeader(header)
+
+	for _, value := range values {
+		table.Append(value)
+	}
+
+	if len(values) > 0 {
+		table.Render()
+	}
+
+	return table
 }

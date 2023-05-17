@@ -25,7 +25,7 @@ func Download() *cli.Command {
 				Name:     "title",
 				Aliases:  []string{"n"},
 				Usage:    "movie identification name",
-				Required: true,
+				Required: false,
 			},
 			&cli.StringFlag{
 				Name:     "resolution",
@@ -80,6 +80,10 @@ func Download() *cli.Command {
 			codec := c.String("codec")
 			quality := c.String("quality")
 			resolution := c.String("resolution")
+
+			if title == "" {
+				title = c.Args().Get(0)
+			}
 
 			if key == "" {
 				key = slug.Make(title)

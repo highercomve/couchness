@@ -15,9 +15,10 @@ func (movie *Movie) PrintString() string {
 // Summary get show summary information
 func (movie *Movie) Summary() string {
 	return fmt.Sprintf(
-		"(ID: %s) %s (size: %d)",
+		"(ID: %s) %s (size: %d) (IMDB ID: %s)",
 		movie.ID,
 		movie.Show.Title,
 		movie.TorrentInfo.Size,
+		movie.ExternalID,
 	)
 }

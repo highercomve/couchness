@@ -3,10 +3,12 @@ package common
 import (
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/gosimple/slug"
 	"github.com/highercomve/couchness/models"
 	"github.com/highercomve/couchness/storage"
+	"github.com/highercomve/couchness/utils"
 )
 
 // Add add new show to database
@@ -32,9 +34,13 @@ func SearchAndSelectOnImdb(title string, typeOf string) (string, string, string,
 		show = possibleShows.Search[0]
 	} else if len(possibleShows.Search) > 1 {
 		fmt.Println("There is more than one result on imdb for your show, please select one and press ENTER: ")
+
+		table := utils.PrintTable([]string{"#", "Name", "Year", "Show ID"}, nil)
 		for i, show := range possibleShows.Search {
-			fmt.Printf("%d) %s from %s -- IMDB ID = %s \n\r", i+1, show.Title, show.Year, show.ImdbID)
+			table.Append([]string{strconv.Itoa(i + 1), show.Title, show.Year, show.ImdbID})
 		}
+		table.Render()
+
 		var input int
 		fmt.Scan(&input)
 		show = possibleShows.Search[input-1]

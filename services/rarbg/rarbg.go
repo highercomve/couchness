@@ -48,18 +48,24 @@ func (s Service) GetShowData(show *models.Show, page, limit int, typeOf string) 
 		return nil, err
 	}
 
+	api.
+		Format("json_extended").
+		Limit(limit).
+		SearchIMDb(show.ExternalID).
+		Sort("seeders")
+
 	switch typeOf {
 	case "movies":
 		api.
 			Category(4).
 			Category(17).
-			Category(42).
 			Category(44).
 			Category(45).
-			Category(46).
 			Category(47).
 			Category(50).
 			Category(51).
+			Category(42).
+			Category(46).
 			Category(54)
 	default:
 		api.
@@ -68,11 +74,6 @@ func (s Service) GetShowData(show *models.Show, page, limit int, typeOf string) 
 			Category(41).
 			Category(49)
 	}
-
-	api.
-		Format("json_extended").
-		Limit(limit).
-		SearchIMDb(show.ExternalID)
 
 	results, err := api.Search()
 	if err != nil {

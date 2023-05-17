@@ -11,8 +11,12 @@ github.com/jcelliott/lumber v0.0.0-20160324203708-dd349441af25 h1:EFT6MH3igZK/dI
 github.com/jcelliott/lumber v0.0.0-20160324203708-dd349441af25/go.mod h1:sWkGw/wsaHtRsT9zGQ/WyJCotGWG/Anow/9hsAcBWRw=
 github.com/kylelemons/godebug v1.1.0 h1:RPNrshWIDI6G2gRW9EHilWtl7Z6Sb1BR0xunSBf0SNc=
 github.com/kylelemons/godebug v1.1.0/go.mod h1:9/0rRGxNHcop5bhtWyNeEfOS8JIWk580+fNqagV/RAw=
+github.com/mattn/go-runewidth v0.0.9 h1:Lm995f3rfxdpd6TSmuVCHVb/QhupuXlYr8sCI/QdE+0=
+github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
 github.com/odwrtw/transmission v0.0.0-20221028215408-b11d7d55c759 h1:r3iRIEQq8R+uCW0PY+ude4yerchKyYhO003kQk0g4pE=
 github.com/odwrtw/transmission v0.0.0-20221028215408-b11d7d55c759/go.mod h1:GdV2H0+oYNNdo/vgsMbDBQ9CFrNJkJtpM0CbU/gbdls=
+github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=
+github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
 github.com/qopher/go-torrentapi v0.0.0-20190920055042-036fa2f8cb12 h1:3JaDU8VgnPp6RSsl0vFYcTb5rGO9BZTMmxd8P4Rv8Z8=
 github.com/qopher/go-torrentapi v0.0.0-20190920055042-036fa2f8cb12/go.mod h1:Ysid2lEJaS9085EvrwhPCqyeOqToK4McaIPmZgkgJd4=
 github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf35Ld67mk=

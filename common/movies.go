@@ -3,11 +3,14 @@ package common
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/highercomve/couchness/models"
 	"github.com/highercomve/couchness/storage"
+	"github.com/highercomve/couchness/utils"
+	"github.com/highercomve/couchness/utils/humanize"
 )
 
 const sepator = "="
@@ -37,8 +40,9 @@ func getTorrents(movie *models.Movie, channel chan<- models.Episodes) {
 
 func AddMovie(movie *models.Movie) (*models.Movie, error) {
 	fmt.Printf(
-		"\n\r\n\r %s Select the movie to download: %s \n\r\n\r",
+		"\n\r\n\r %s Select the movie version of %s: %s \n\r\n\r",
 		strings.Repeat(sepator, 5),
+		movie.ExternalID,
 		strings.Repeat(sepator, 5),
 	)
 
@@ -70,9 +74,16 @@ mainLoop:
 		return nil, fmt.Errorf("no torrents found for movie: %s \n\r", movie.Summary())
 	}
 
-	for index, torrent := range torrents {
-		fmt.Printf("%d) %++v \n", index+1, torrent.Summary())
+	table := utils.PrintTable([]string{"#", "Name", "Size", "Seeds"}, nil)
+	for i, torrent := range torrents {
+		table.Append([]string{
+			strconv.Itoa(i + 1),
+			torrent.Title,
+			humanize.Bytes(uint64(torrent.Size)),
+			strconv.Itoa(torrent.Seeds),
+		})
 	}
+	table.Render()
 
 	var input int
 	fmt.Scan(&input)
