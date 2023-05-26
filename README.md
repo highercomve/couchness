@@ -62,19 +62,28 @@ USAGE:
    couchness [global options] command [command options] [arguments...]
 
 VERSION:
-   0.0.1
+   0.2.1
 
 AUTHOR:
    Sergio Marin
 
 COMMANDS:
-   add, a          add SHOW_NAME FOLDER
-   scan, s         scan FOLDER
-   download, d     download SHOW_ID
-   update-all, ua  update all your shows
-   help, h         Shows a list of commands or help for one command
+   add, a              add SHOW_NAME FOLDER
+   scan, s             scan
+   download, d         download SHOW_ID
+   update-all, ua      update all your shows
+   migrate, m          Migrate shows from monoservice to multiservice
+   update, u           update one show using showID
+   shows               show
+   show                show <SHOW_ID>
+   add-shows-dir, asd  add-shows-dir <directory>
+   download-ep, de     download SHOW_ID EPISODE maximun_search(optional)
+   disable             disable <SHOW_ID>
+   movies              movies
+   help, h             Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --help, -h     show help (default: false)
-   --version, -v  print the version (default: false)
+   --config-dir value  
+   --help, -h          show help
+   --version, -v       print the version
 ```
