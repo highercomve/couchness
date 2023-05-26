@@ -28,7 +28,7 @@ func UpdateAll() *cli.Command {
 					return cli.Exit(err.Error(), 0)
 				}
 
-				shows, err := common.Scan(folderPath+"/", false, false)
+				shows, err := common.Scan(folderPath+"/", "", false, false)
 				if err != nil {
 					return cli.Exit(err.Error(), 0)
 				}

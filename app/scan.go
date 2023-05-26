@@ -39,7 +39,7 @@ func Scan() *cli.Command {
 				}
 
 				fmt.Println("Scaning folder: " + folderPath)
-				shows, err := common.Scan(folderPath+"/", interactive, initialize)
+				shows, err := common.Scan(folderPath+"/", "", interactive, initialize)
 				if err != nil {
 					return cli.Exit(err.Error(), 0)
 				}

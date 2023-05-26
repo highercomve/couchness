@@ -18,7 +18,7 @@ var defaultConf = &models.ShowConf{
 }
 
 // Scan folder for series
-func Scan(folder string, i, r bool) ([]*models.Show, error) {
+func Scan(folder string, showID string, i, r bool) ([]*models.Show, error) {
 	matches, err := doublestar.Glob(folder + "/**/*[Ss]*[Ee]*.{mov,avi,wmv,flv,3gp,mp4,mpg,mkv}")
 	if err != nil {
 		return nil, err
@@ -26,10 +26,13 @@ func Scan(folder string, i, r bool) ([]*models.Show, error) {
 	shows := make(models.ShowsMap, 0)
 
 	for _, m := range matches {
+		id := showID
 		basename := filepath.Base(m)
 		extension := filepath.Ext(m)
 		sName := slug.Make(showFolder(m, folder))
-		id := slug.Make(getShowDir(folder))
+		if id == "" {
+			id = sName
+		}
 		EpisodeData, err := utils.ParseTorrent(basename)
 		if err != nil {
 			return nil, err
@@ -47,7 +50,7 @@ func Scan(folder string, i, r bool) ([]*models.Show, error) {
 		shows[id] = &models.Show{
 			ID:            id,
 			Title:         strings.ReplaceAll(sName, "-", " "),
-			Directory:     folder + sName,
+			Directory:     folder + id,
 			Configuration: defaultConf,
 			Episodes:      append(episodes, EpisodeData),
 		}
