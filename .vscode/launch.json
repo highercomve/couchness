@@ -18,12 +18,11 @@
           "maxArrayValues": 64,
           "maxStructFields": -1
       },
-      "env": {
-        "PVR_DISABLE_SELF_UPGRADE": "true"
-      },
+      "env": {},
       "console": "integratedTerminal",
       "args": [
-        "ua"
+        "d",
+        "young-sheldon"
       ]
     }
   ]

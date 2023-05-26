@@ -29,6 +29,7 @@ func Scan(folder string, i, r bool) ([]*models.Show, error) {
 		basename := filepath.Base(m)
 		extension := filepath.Ext(m)
 		sName := slug.Make(showFolder(m, folder))
+		id := slug.Make(getShowDir(folder))
 		EpisodeData, err := utils.ParseTorrent(basename)
 		if err != nil {
 			return nil, err
@@ -38,13 +39,13 @@ func Scan(folder string, i, r bool) ([]*models.Show, error) {
 		EpisodeData.Location = m
 		EpisodeData.Downloaded = true
 		var episodes models.Episodes
-		if shows[sName] == nil {
+		if shows[id] == nil {
 			episodes = make(models.Episodes, 0)
 		} else {
-			episodes = shows[sName].Episodes
+			episodes = shows[id].Episodes
 		}
-		shows[sName] = &models.Show{
-			ID:            sName,
+		shows[id] = &models.Show{
+			ID:            id,
 			Title:         strings.ReplaceAll(sName, "-", " "),
 			Directory:     folder + sName,
 			Configuration: defaultConf,
