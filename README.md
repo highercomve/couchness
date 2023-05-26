@@ -22,6 +22,8 @@ www.omdbapi.com/apikey.aspx
 
 ## Install 
 
+Important you need to have install transmission, because couchness is going to search and mantain your shows or movies, but uses transmission as tools to download the torrents.
+
 **Latest Release**
 
 ```bash
