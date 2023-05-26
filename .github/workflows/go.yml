@@ -33,7 +33,7 @@ jobs:
       - name: Upload linux arm
         uses: actions/upload-artifact@v1
         with:
-          name: couchness_arm
+          name: couchness_linux_arm
           path: build/linux_arm/couchness
       
       - name: Upload linux 64 bit
@@ -45,7 +45,7 @@ jobs:
       - name: Upload OSX
         uses: actions/upload-artifact@v1
         with:
-          name: couchness_osx
+          name: couchness_darwin_amd64
           path: build/darwin_amd64/couchness
       
       - name: Upload Windows 64 bit
