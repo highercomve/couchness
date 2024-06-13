@@ -28,7 +28,7 @@ jobs:
           fi
 
       - name: Build
-        run: make clean && make  build
+        run: make clean && make build
       
       - name: Upload linux arm
         uses: actions/upload-artifact@v1

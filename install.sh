@@ -41,9 +41,9 @@ esac
 
 PLATFORM=($OS"_"$ARCH)
 
-echo "Downloading couchness build for $PLATFORM to $install_location"
+echo "Downloading couchness build for $PLATFORM to ~/bin/couchness"
 
-version=`curl -s -L 'https://api.github.com/repos/highercomve/couchness/releases' -H 'Accept: application/vnd.github.v3+json' -H 'Accept-Language: en-US,en;q=0.5' | jq --arg "PLATFORM" "$PLATFORM" '[.[] | select(.prerelease == false)][0].assets | (.[] | select(.name | contains("'$PLATFORM'.zip")))'`
+version=`curl -s -L 'https://api.github.com/repos/highercomve/couchness/releases' -H 'Accept: application/vnd.github.v3+json' -H 'Accept-Language: en-US,en;q=0.5' | jq --arg platform "$PLATFORM" '[.[] | select(.prerelease == false)][0].assets | (.[] | select(.name | contains("'$platform'.zip")))'`
 downloadurl=`echo "$version" | jq -r .browser_download_url`
 versionnumber=`echo "$version" | jq -r .name`
 
@@ -65,13 +65,6 @@ fi
 
 echo "Downloading latest version from: $downloadurl"
 
-tempdir=`mktemp -d`
-curl -L "$downloadurl" -o "$tempdir/couchness.zip"
-cd $tempdir
-unzip $tempdir/couchness.zip
-rm $tempdir/couchness.zip
-mv couchness* "$install_location"
-cd - > /dev/null
-rm -rf $tempdir
+curl -L "$downloadurl" -o install_location
 
-chmod +x "$install_location"
+chmod +x install_location
