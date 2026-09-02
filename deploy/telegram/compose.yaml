@@ -55,3 +55,36 @@ services:
     volumes:
       - "${COUCHNESS_DATA_DIR:-/opt/couchness-data}/couchness:/config"
       - "${COUCHNESS_DATA_DIR:-/opt/couchness-data}/media:/downloads"
+
+  couchness-web:
+    build:
+      context: ../..
+      dockerfile: deploy/telegram/Dockerfile
+    image: couchness:telegram
+    container_name: couchness-web
+    restart: unless-stopped
+    depends_on:
+      - transmission
+    entrypoint:
+      - /usr/local/bin/couchness
+    command:
+      - --config-dir
+      - /config
+      - web
+      - run
+      - --addr
+      - :8085
+    environment:
+      TZ: "${TZ:-America/Santiago}"
+      COUCHNESS_WEB_AUTH: "${COUCHNESS_TRANSMISSION_USER}:${COUCHNESS_TRANSMISSION_PASSWORD}"
+      COUCHNESS_OMDB_API_KEY: "${COUCHNESS_OMDB_API_KEY:-}"
+      COUCHNESS_SHOWS_DIR: /downloads/shows/
+      COUCHNESS_MOVIES_DIR: /downloads/movies/
+      COUCHNESS_TRANSMISSION_HOST: transmission
+      COUCHNESS_TRANSMISSION_PORT: "9091"
+      COUCHNESS_TRANSMISSION_AUTH: "${COUCHNESS_TRANSMISSION_USER}:${COUCHNESS_TRANSMISSION_PASSWORD}"
+    volumes:
+      - "${COUCHNESS_DATA_DIR:-/opt/couchness-data}/couchness:/config"
+      - "${COUCHNESS_DATA_DIR:-/opt/couchness-data}/media:/downloads"
+    ports:
+      - "8085:8085"
