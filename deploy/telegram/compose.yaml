@@ -18,6 +18,21 @@ services:
       - "51413:51413"
       - "51413:51413/udp"
 
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: couchness-plex
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "${TZ:-America/Santiago}"
+      VERSION: docker
+      PLEX_CLAIM: "${PLEX_CLAIM:-}"
+    volumes:
+      - "${COUCHNESS_DATA_DIR:-/opt/couchness-data}/plex:/config"
+      - "${COUCHNESS_DATA_DIR:-/opt/couchness-data}/media:/media:ro"
+
   couchness-telegram:
     build:
       context: ../..
