@@ -73,6 +73,7 @@ func (bot *Bot) startRemoveShow(ctx context.Context, message *Message, user *mod
 		bot.removals = make(map[int64]*removeShowSession)
 	}
 	delete(bot.sessions, message.From.ID)
+	delete(bot.movieSessions, message.From.ID)
 	bot.removals[message.From.ID] = session
 	text := session.listText()
 	markup := session.listKeyboard()

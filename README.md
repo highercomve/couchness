@@ -87,8 +87,10 @@ Authorized bot commands:
 
 ```text
 /shows
+/movies
 /show <show_id>
 /add_show <title>
+/add_movie <title>
 /remove_show [show_id]
 /update <show_id>
 /download <show_id>
@@ -101,6 +103,8 @@ Authorized bot commands:
 Owners and admins can create single-use invite links from the bot. Invites expire after 10 minutes. Only owners can invite or revoke admins; owner accounts are managed through the CLI. The bot accepts commands only in private chats.
 
 `/add_show` provides a guided setup with OMDb search-result buttons, follow-mode and resolution choices, confirmation, and optional immediate download. Owners and admins may use it. Send `/cancel` at any time to close an active setup.
+
+`/add_movie` lets owners and admins search OMDb, choose a torrent, confirm the download, and add the queued movie to the movies list. `/movies` lists queued movies. Send `/cancel` at any time to close an active setup.
 
 `/remove_show` lets owners and admins choose a tracked show, review a clear warning, and remove only its Couchness record. Media files and Transmission torrents remain untouched, and later scans will not re-add the show. Running `/add_show` for it again removes that exclusion.
 

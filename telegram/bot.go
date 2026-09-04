@@ -19,11 +19,14 @@ const inviteLifetime = 10 * time.Minute
 
 // Bot exposes Couchness operations through Telegram commands.
 type Bot struct {
-	client      *apiClient
-	username    string
-	sessions    map[int64]*addShowSession
-	removals    map[int64]*removeShowSession
-	searchShows func(string, string) (*common.OmdbResponse, error)
+	client              *apiClient
+	username            string
+	sessions            map[int64]*addShowSession
+	movieSessions       map[int64]*addMovieSession
+	removals            map[int64]*removeShowSession
+	searchShows         func(string, string) (*common.OmdbResponse, error)
+	searchMovieTorrents func(*models.Movie) (models.Episodes, error)
+	downloadMovie       func(*models.Movie, *models.TorrentInfo) error
 }
 
 // New validates token and creates a Telegram bot.
@@ -37,11 +40,14 @@ func New(ctx context.Context, token string) (*Bot, error) {
 		return nil, err
 	}
 	return &Bot{
-		client:      client,
-		username:    identity.Username,
-		sessions:    make(map[int64]*addShowSession),
-		removals:    make(map[int64]*removeShowSession),
-		searchShows: common.SearchShowInfo,
+		client:              client,
+		username:            identity.Username,
+		sessions:            make(map[int64]*addShowSession),
+		movieSessions:       make(map[int64]*addMovieSession),
+		removals:            make(map[int64]*removeShowSession),
+		searchShows:         common.SearchShowInfo,
+		searchMovieTorrents: common.SearchMovieTorrents,
+		downloadMovie:       common.DownloadMovie,
 	}, nil
 }
 
@@ -130,6 +136,8 @@ func (bot *Bot) handleMessage(ctx context.Context, message *Message) {
 		bot.reply(ctx, message.Chat.ID, helpText(user.Role))
 	case "/shows":
 		bot.listShows(ctx, message.Chat.ID)
+	case "/movies":
+		bot.listMovies(ctx, message.Chat.ID)
 	case "/show":
 		bot.show(ctx, message.Chat.ID, arguments)
 	case "/update":
@@ -140,6 +148,8 @@ func (bot *Bot) handleMessage(ctx context.Context, message *Message) {
 		bot.updateAll(ctx, message.Chat.ID, user)
 	case "/add_show":
 		bot.startAddShow(ctx, message, user, arguments)
+	case "/add_movie":
+		bot.startAddMovie(ctx, message, user, arguments)
 	case "/remove_show":
 		bot.startRemoveShow(ctx, message, user, arguments)
 	case "/cancel":
@@ -168,6 +178,23 @@ func (bot *Bot) listShows(ctx context.Context, chatID int64) {
 	lines := make([]string, 0, len(shows))
 	for _, show := range shows {
 		lines = append(lines, show.Summary())
+	}
+	bot.reply(ctx, chatID, strings.Join(lines, "\n"))
+}
+
+func (bot *Bot) listMovies(ctx context.Context, chatID int64) {
+	movies, err := common.GetMovies()
+	if err != nil {
+		bot.reply(ctx, chatID, "Could not list movies: "+err.Error())
+		return
+	}
+	if len(movies) == 0 {
+		bot.reply(ctx, chatID, "No movies found.")
+		return
+	}
+	lines := make([]string, 0, len(movies))
+	for _, movie := range movies {
+		lines = append(lines, movie.Summary())
 	}
 	bot.reply(ctx, chatID, strings.Join(lines, "\n"))
 }
@@ -338,6 +365,7 @@ func randomCode() (string, error) {
 func helpText(role string) string {
 	commands := []string{
 		"/shows - list shows",
+		"/movies - list movies",
 		"/show <show_id> - show details",
 	}
 	if role != models.TelegramRoleViewer {
@@ -350,6 +378,7 @@ func helpText(role string) string {
 	if isAdministrator(role) {
 		commands = append(commands,
 			"/add_show <title> - add a show with guided setup",
+			"/add_movie <title> - find and download a movie",
 			"/remove_show - stop tracking a show",
 			"/users - list authorized users",
 			"/invite [user|viewer|admin] - create invite",
@@ -363,7 +392,9 @@ func telegramCommands() []BotCommand {
 	return []BotCommand{
 		{Command: "start", Description: "Show available commands"},
 		{Command: "shows", Description: "List shows in your library"},
+		{Command: "movies", Description: "List movies in your library"},
 		{Command: "add_show", Description: "Add a show with guided setup"},
+		{Command: "add_movie", Description: "Find and download a movie"},
 		{Command: "remove_show", Description: "Stop tracking a show"},
 		{Command: "update", Description: "Update one show"},
 		{Command: "download", Description: "Download latest episode"},
