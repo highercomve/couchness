@@ -19,7 +19,7 @@ func TestHelpTextRespectsRole(t *testing.T) {
 	}
 
 	ownerHelp := helpText(models.TelegramRoleOwner)
-	if !strings.Contains(ownerHelp, "/download") || !strings.Contains(ownerHelp, "/invite") || !strings.Contains(ownerHelp, "/add_show") || !strings.Contains(ownerHelp, "/remove_show") {
+	if !strings.Contains(ownerHelp, "/download") || !strings.Contains(ownerHelp, "/invite") || !strings.Contains(ownerHelp, "/add_show") || !strings.Contains(ownerHelp, "/add_movie") || !strings.Contains(ownerHelp, "/remove_show") {
 		t.Fatalf("owner commands are incomplete: %s", ownerHelp)
 	}
 }

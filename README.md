@@ -87,8 +87,10 @@ Authorized bot commands:
 
 ```text
 /shows
+/movies
 /show <show_id>
 /add_show <title>
+/add_movie <title>
 /remove_show [show_id]
 /update <show_id>
 /download <show_id>
@@ -102,15 +104,19 @@ Owners and admins can create single-use invite links from the bot. Invites expir
 
 `/add_show` provides a guided setup with OMDb search-result buttons, follow-mode and resolution choices, confirmation, and optional immediate download. Owners and admins may use it. Send `/cancel` at any time to close an active setup.
 
+`/add_movie` lets owners and admins search OMDb, choose a torrent, confirm the download, and add the queued movie to the movies list. `/movies` lists queued movies. Send `/cancel` at any time to close an active setup.
+
 `/remove_show` lets owners and admins choose a tracked show, review a clear warning, and remove only its Couchness record. Media files and Transmission torrents remain untouched, and later scans will not re-add the show. Running `/add_show` for it again removes that exclusion.
 
-`/remove_show` lets owners and admins select a tracked show and confirm removal. It deletes only the Couchness record; local media files and Transmission torrents remain untouched.
-
-For a combined Couchness and Transmission deployment, copy `deploy/telegram/couchness.env.example`, fill its values, and run:
+For a combined Couchness Web, Telegram, Transmission, and Plex deployment, copy `deploy/telegram/couchness.env.example`, fill its values, and run:
 
 ```bash
 docker compose --env-file couchness.env -f deploy/telegram/compose.yaml up -d --build
 ```
+
+Plex stores its configuration under `${COUCHNESS_DATA_DIR}/plex` and mounts the shared media directory read-only at `/media`. After startup, open `http://<host>:32400/web`, claim the server, and add `/media/shows` and `/media/movies` as libraries. `PLEX_CLAIM` may be set to a temporary claim token for automatic first-run claiming.
+
+Couchness Web listens on `http://<host>:8085`. The Compose deployment protects it with HTTP Basic Auth using the configured Transmission username and password.
 
 ## Movies
 

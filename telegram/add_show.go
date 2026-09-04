@@ -82,6 +82,7 @@ func (bot *Bot) startAddShow(ctx context.Context, message *Message, user *models
 		}
 	}
 	delete(bot.removals, message.From.ID)
+	delete(bot.movieSessions, message.From.ID)
 	bot.sessions[message.From.ID] = session
 
 	sent, err := bot.client.sendMessageWithKeyboard(ctx, message.Chat.ID, "Select the correct show:", session.resultsKeyboard())
@@ -118,6 +119,8 @@ func (bot *Bot) handleCallback(ctx context.Context, callback *CallbackQuery) {
 		bot.handleAddShowCallback(ctx, callback, parts)
 	case "remove":
 		bot.handleRemoveShowCallback(ctx, callback, parts)
+	case "movie":
+		bot.handleAddMovieCallback(ctx, callback, parts)
 	}
 }
 
@@ -232,6 +235,12 @@ func (bot *Bot) cancelSession(ctx context.Context, chatID, userID int64) {
 	if removal != nil {
 		delete(bot.removals, userID)
 		bot.editRemoval(ctx, removal, "Show removal cancelled.", InlineKeyboardMarkup{})
+		return
+	}
+	movie := bot.movieSessions[userID]
+	if movie != nil {
+		delete(bot.movieSessions, userID)
+		bot.editMovieSession(ctx, movie, "Movie setup cancelled.", InlineKeyboardMarkup{})
 		return
 	}
 	bot.reply(ctx, chatID, "No active setup.")
