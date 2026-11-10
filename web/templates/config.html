@@ -8,6 +8,18 @@
   <label for="transmission_port">Transmission port</label><input id="transmission_port" name="transmission_port" value="{{.Config.TransmissionPort}}">
   <label for="transmission_auth">Transmission auth (user:password)</label><input id="transmission_auth" name="transmission_auth" value="{{.Config.TransmissionAuth}}">
   <label for="omdb_api_key">OMDb API key</label><input id="omdb_api_key" name="omdb_api_key" value="{{.Config.OmdbAPIKey}}">
+  {{range .Data.MediaServers}}
+  <h2 class="form-section">{{.Label}}</h2>
+  <label for="{{.Type}}_url">{{.Label}} URL</label><input id="{{.Type}}_url" name="{{.Type}}_url" value="{{.URL}}" placeholder="http://localhost:{{if eq .Type "jellyfin"}}8097{{else}}8096{{end}}">
+  <label for="{{.Type}}_username">Username</label><input id="{{.Type}}_username" name="{{.Type}}_username" value="{{.Username}}" autocomplete="off">
+  <label for="{{.Type}}_password">Password</label><input id="{{.Type}}_password" name="{{.Type}}_password" type="password" autocomplete="new-password" placeholder="{{if .HasPassword}}saved, leave empty to keep{{end}}">
+  <label for="{{.Type}}_api_key">API key (instead of a password)</label><input id="{{.Type}}_api_key" name="{{.Type}}_api_key" type="password" autocomplete="off" placeholder="{{if .HasAPIKey}}saved, leave empty to keep{{else}}optional{{end}}">
+  {{end}}
+  <p class="form-hint">couchness signs in to these servers to rescan their libraries after it moves files. The user needs to be an administrator. Clear the URL to remove a server.</p>
   <button type="submit">Save</button>
 </form>
+<div class="actions">
+  <button hx-post="/media-servers/test" hx-target="#flash">Test connection</button>
+  <button hx-post="/media-servers/refresh" hx-target="#flash">Rescan libraries now</button>
+</div>
 {{end}}

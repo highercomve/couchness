@@ -87,3 +87,18 @@ type TorrentRequest struct {
 	Quality    string
 	Codec      string
 }
+
+// ConfigPage is the configuration page's extra data.
+type ConfigPage struct {
+	MediaServers []MediaServerForm
+}
+
+// MediaServerForm shows one media server's settings without its secrets.
+type MediaServerForm struct {
+	Type        string // "jellyfin" or "emby"
+	Label       string // "Jellyfin"
+	URL         string
+	Username    string
+	HasPassword bool
+	HasAPIKey   bool
+}

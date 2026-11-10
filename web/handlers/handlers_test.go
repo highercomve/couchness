@@ -362,3 +362,43 @@ func TestRootRedirects(t *testing.T) {
 	}
 	_ = resp.Body.Close()
 }
+
+func TestConfigMediaServersKeepSecretsServerSide(t *testing.T) {
+	_, _, mux := newTestHandler(t)
+	base := "shows_dir=/tmp/shows&movies_dir=/tmp/movies&transmission_host=tx&transmission_port=9091&transmission_auth=u:p&omdb_api_key=key&emby_url="
+	resp := post(t, mux, "/config", base+"&jellyfin_url=http://jf:8097/&jellyfin_username=highercomve&jellyfin_password=s3cret&jellyfin_api_key=")
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("expected 200 got %d", resp.StatusCode)
+	}
+	jf, ok := storage.AppConfiguration.MediaServer(models.MediaServerJellyfin)
+	if !ok || jf.URL != "http://jf:8097" || jf.Username != "highercomve" || jf.Password != "s3cret" {
+		t.Fatalf("jellyfin not saved: %+v", jf)
+	}
+
+	// the page never echoes the password back
+	body := bodyString(t, get(t, mux, "/config", nil))
+	if strings.Contains(body, "s3cret") {
+		t.Fatal("password leaked into the config page")
+	}
+	if !strings.Contains(body, "saved, leave empty to keep") {
+		t.Fatal("page should say a password is saved")
+	}
+
+	// saving again with an empty password keeps the stored one
+	post(t, mux, "/config", base+"&jellyfin_url=http://jf:8097&jellyfin_username=highercomve&jellyfin_password=&jellyfin_api_key=")
+	if jf, _ = storage.AppConfiguration.MediaServer(models.MediaServerJellyfin); jf.Password != "s3cret" {
+		t.Fatalf("empty field should keep the password, got %q", jf.Password)
+	}
+
+	// clearing the URL removes the server
+	post(t, mux, "/config", base+"&jellyfin_url=&jellyfin_username=&jellyfin_password=&jellyfin_api_key=")
+	if _, ok := storage.AppConfiguration.MediaServer(models.MediaServerJellyfin); ok {
+		t.Fatal("empty URL should remove the server")
+	}
+
+	// test/rescan without servers explain what to do
+	resp = post(t, mux, "/media-servers/refresh", "")
+	if resp.StatusCode != http.StatusOK || !strings.Contains(bodyString(t, resp), "No media server configured") {
+		t.Fatal("refresh without servers should explain how to add one")
+	}
+}

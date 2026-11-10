@@ -117,6 +117,48 @@ docker compose --env-file couchness.env -f deploy/telegram/compose.yaml up -d --
 `couchness movies download` searches YTS and The Pirate Bay (services `yts` and `tpb`) for torrents
 matching the movie's IMDb ID. RARBG shut down in 2023, so it is no longer used as a movie source.
 
+### Group copies of the same movie as versions
+
+When a movie is downloaded more than once (1080p and 4K, two releases...), Jellyfin, Emby and Plex
+show it as separate movies unless the copies share one folder. `couchness movies group` finds
+those copies and moves them into the layout these servers use for versions:
+
+```
+Inside Llewyn Davis (2013)/
+├── Inside Llewyn Davis (2013) - 1080p BluRay H264 DTS-HD MA 5.1 PublicHD.mkv
+├── Inside Llewyn Davis (2013) - 1080p BluRay H264 anoXmous.mp4
+└── Inside Llewyn Davis (2013) - 1080p BluRay H264 anoXmous.eng.srt
+```
+
+```bash
+couchness movies group                 # dry run: prints the plan, changes nothing
+couchness movies group --apply         # move the files
+couchness movies group --apply --jellyfin-url http://localhost:8097 --jellyfin-key KEY
+```
+
+Subtitles, `.nfo` files, extras folders and artwork move with their video. Files are never deleted
+or overwritten, folders are removed only when they end up empty, multi-part movies (`cd1`/`cd2`)
+are skipped, and movies transmission is still seeding are skipped unless `--force` is given.
+After moving files it asks the configured media servers (below) to rescan.
+
+### Jellyfin and Emby rescans
+
+couchness can sign in to Jellyfin or Emby and ask them to rescan their libraries, so changes made
+by couchness show up immediately. The user must be an administrator; an API key (Dashboard → API
+Keys) can be used instead of a password.
+
+```bash
+couchness media-servers set jellyfin --url http://localhost:8097 --username USER --password-stdin
+couchness media-servers set emby --url http://localhost:8096 --api-key KEY
+couchness media-servers test       # sign in and show server name/version
+couchness media-servers refresh    # start a library rescan
+couchness media-servers list       # passwords are never printed
+```
+
+The same settings are on the web UI's Configuration page, together with "Test connection" and
+"Rescan libraries now" buttons. Environment variables `COUCHNESS_JELLYFIN_URL`, `_USERNAME`,
+`_PASSWORD`, `_API_KEY` (and `COUCHNESS_EMBY_...`) override the stored values.
+
 ## Web UI
 
 Couchness ships a small web interface (server-rendered HTML + htmx) to scan the library, update shows,

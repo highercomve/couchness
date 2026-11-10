@@ -20,5 +20,6 @@ var Commands []*cli.Command = []*cli.Command{
 	DisableShow(),
 	Telegram(),
 	Web(),
+	MediaServers(),
 	movies.Movies(),
 }

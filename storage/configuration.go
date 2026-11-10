@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"strings"
 
 	"github.com/highercomve/couchness/models"
 )
@@ -90,6 +91,28 @@ func applyEnvironmentOverrides(configuration *models.AppConfiguration) {
 	}
 	if value := os.Getenv("COUCHNESS_TRANSMISSION_PORT"); value != "" {
 		configuration.TransmissionPort = value
+	}
+	for _, kind := range []string{models.MediaServerJellyfin, models.MediaServerEmby} {
+		applyMediaServerOverrides(configuration, kind)
+	}
+}
+
+// applyMediaServerOverrides reads COUCHNESS_JELLYFIN_URL, _USERNAME,
+// _PASSWORD and _API_KEY (or the COUCHNESS_EMBY_ equivalents).
+func applyMediaServerOverrides(configuration *models.AppConfiguration, kind string) {
+	prefix := "COUCHNESS_" + strings.ToUpper(kind) + "_"
+	server, _ := configuration.MediaServer(kind)
+	changed := false
+	for suffix, field := range map[string]*string{
+		"URL": &server.URL, "USERNAME": &server.Username, "PASSWORD": &server.Password, "API_KEY": &server.APIKey,
+	} {
+		if value := os.Getenv(prefix + suffix); value != "" {
+			*field = value
+			changed = true
+		}
+	}
+	if changed {
+		configuration.SetMediaServer(server)
 	}
 }
 

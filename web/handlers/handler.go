@@ -74,6 +74,8 @@ func (h *Handler) Register(mux *http.ServeMux) {
 	mux.HandleFunc("POST /movies/download", h.movieDownload)
 	mux.HandleFunc("GET /config", h.configPage)
 	mux.HandleFunc("POST /config", h.configSave)
+	mux.HandleFunc("POST /media-servers/test", h.mediaServersTest)
+	mux.HandleFunc("POST /media-servers/refresh", h.mediaServersRefresh)
 	mux.HandleFunc("GET /jobs", h.jobsPage)
 	mux.HandleFunc("GET /jobs/{id}", h.job)
 }

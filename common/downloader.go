@@ -38,8 +38,8 @@ var FollowServices = map[string]models.FollowService{
 	tpb.ServiceType:     tpbService,
 }
 
-// DownloadTorrent use transmission to queue the torrent
-func DownloadTorrent(magnetURL, destination string) (*transmission.Torrent, error) {
+// transmissionClient connects to the configured transmission daemon.
+func transmissionClient() (*transmission.Client, error) {
 	auth := strings.SplitN(storage.AppConfiguration.TransmissionAuth, ":", 2)
 	password := ""
 	if len(auth) > 1 {
@@ -52,7 +52,12 @@ func DownloadTorrent(magnetURL, destination string) (*transmission.Torrent, erro
 		User:     auth[0],
 		Password: password,
 	}
-	t, err := transmission.New(conf)
+	return transmission.New(conf)
+}
+
+// DownloadTorrent use transmission to queue the torrent
+func DownloadTorrent(magnetURL, destination string) (*transmission.Torrent, error) {
+	t, err := transmissionClient()
 	if err != nil {
 		return nil, err
 	}

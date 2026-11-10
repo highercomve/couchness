@@ -16,6 +16,7 @@ func Movies() *cli.Command {
 		Subcommands: []*cli.Command{
 			Download(),
 			List(),
+			Group(),
 		},
 	}
 }
